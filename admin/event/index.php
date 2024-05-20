@@ -1,8 +1,3 @@
-<?php
-include '../../function.php';
-$kategori = query("SELECT *FROM kategori");
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,50 +39,67 @@ $kategori = query("SELECT *FROM kategori");
         </div>
 
         <div class="">
-            <h1 class="text-white font-bold text-4xl py-6 ">Kategori</h1>
+            <h1 class="text-white font-bold text-4xl py-6 ">Event</h1>
             <div class="flex justify-center">
                 <hr class="border-white border-1 w-[1050px]">
             </div>
-            <h2 class="text-white font-bold text-4xl flex justify-center py-6">Daftar Kategori</h2>
-            <div class="bg-white rounded-xl shadow-xl w-[1000px] h-3/5 mx-6">
-                <div class="flex justify-end pr-6 pt-6">
-                    <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-44 h-10 ">
-                        <div class="text-center pt-[6px] ">
-                            <a class="text-white gap-2 text-base flex justify-center" href="tambah.php">
-                                <i class="ti ti-circle-plus text-xl"></i><span>Tambah Kategori</span>
-                            </a>
+            <h2 class="text-white font-bold text-4xl flex justify-center py-6">Daftar Event</h2>
+
+            <!-- <table class="mx-auto mt-10 bg-red-500 rounded-lg">
+                <thead class="bg-gray-100 rounded-lg ">
+                    <tr>
+                        <th class="px-6 py-3 text-left font-medium text-gray-700 uppercase tracking-wider">Header 1</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-700 uppercase tracking-wider">Header 2</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-700 uppercase tracking-wider">Header 3</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">Data 1</td>
+                        <td class="px-6 py-4 whitespace-nowrap">Data 2</td>
+                        <td class="px-6 py-4 whitespace-nowrap">Data 3</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">Data 4</td>
+                        <td class="px-6 py-4 whitespace-nowrap">Data 5</td>
+                        <td class="px-6 py-4 whitespace-nowrap">Data 6</td>
+                    </tr> -->
+                    <div class="bg-white rounded-xl shadow-xl w-[1000px] h-3/5 mx-6">
+                        <div class="flex justify-end pr-6 pt-6">
+                            <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-44 h-10 ">
+                                <div class="text-center pt-[6px] ">
+                                    <a class="text-white gap-2 text-base flex justify-center" href="">
+                                        <i class="ti ti-circle-plus text-xl"></i><span>Tambah Event</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="m-4 p-4">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border border-solid border-l-0 border-r-0 ">
-                                <th class="px-4 py-2">#</th>
-                                <th class="px-4 py-2">Kategori</th>
-                                <th class="px-4 py-2">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $i = 1; ?>
-                            <?php foreach ($kategori as $row) : ?>
-                                <tr>
-                                    <td class="px-4 py-2"><?php echo $i; ?></td>
-                                    <td class="px-4 py-2"><?php echo $row["kategori"]; ?></td>
-                                    <td class="px-4 py-2">
-                                        <div class="flex gap-2">
-                                            <a href="ubah.php?id=<?php echo $row["id"]; ?>" class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-24 h-8 text-sm font-bold text-white flex items-center justify-center">Ubah</a>
-                                            <a href="hapus.php?id=<?php echo $row["id"]; ?>" onclick ="return confirm ('yakin?');" class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-24 h-8 text-sm font-bold text-white flex items-center justify-center">Hapus</a>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php $i++; ?>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                        <div class="m-4 p-4">
+                            <table class="w-full">
+                                <thead class="w-full">
+                                    <tr class="border border-solid border-l-0 border-r-0 ">
+                                        <th class="px-4 py-2">#</th>
+                                        <th class="px-4 py-2">Kategori</th>
+                                        <th class="px-4 py-2">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="w-full">
+                                        <td class="px-4 py-2">1</td>
+                                        <td class="px-4 py-2">Malcolm Lockyer</td>
+                                        <td class="px-4 py-2">
+                                            <div class="flex gap-2">
+                                                <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-24 h-8"></div>
+                                                <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-24 h-8"></div>
+                                                <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-24 h-8"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
         </div>
+    </div>
     </div>
 
     <script src="../../script.js"></script>

@@ -1,7 +1,22 @@
 <?php
+//koneksi dengan database
 include '../../function.php';
-$kategori = query("SELECT *FROM kategori");
 
+//cek apakah tombol submit sudah ditekan apa belum
+if (isset($_POST["submit"])) {
+    //cek apakah data berhasil ditambahkan atau tidak 
+    if (tambah($_POST) > 0) {
+        echo "<script>
+        alert('kategori berhasil ditambahkan!');
+        document.location.href = 'index.php'
+        </script>";
+    } else {
+        echo "<script>
+        alert('kategori gagal  ditambahkan!');
+        document.location.href = 'index.php'
+        </script>";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +24,7 @@ $kategori = query("SELECT *FROM kategori");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Tambah Kategori</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
 </head>
@@ -48,51 +63,26 @@ $kategori = query("SELECT *FROM kategori");
             <div class="flex justify-center">
                 <hr class="border-white border-1 w-[1050px]">
             </div>
-            <h2 class="text-white font-bold text-4xl flex justify-center py-6">Daftar Kategori</h2>
-            <div class="bg-white rounded-xl shadow-xl w-[1000px] h-3/5 mx-6">
-                <div class="flex justify-end pr-6 pt-6">
-                    <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-44 h-10 ">
-                        <div class="text-center pt-[6px] ">
-                            <a class="text-white gap-2 text-base flex justify-center" href="tambah.php">
-                                <i class="ti ti-circle-plus text-xl"></i><span>Tambah Kategori</span>
-                            </a>
+            <h2 class="text-white font-bold text-4xl flex justify-center py-6">Tambah Kategori</h2>
+            <div class="flex justify-center">
+                <div class="bg-white rounded-xl shadow-xl w-[1000px] h-3/5 mx-6 p-6">
+                    <form action="" method="post">
+                        <label for="kategori" class="text-[#AC87C5] font-bold text-lg">Kategori</label>
+                        <div class="mt-2">
+                            <input type="text" class="px-4 w-full h-10 bg-white shadow-2xl rounded-xl border-2 border-[#756AB6]" name="kategori" id="kategori" aria-describedby="lokasiHelp" required placeholder="Kategori">
                         </div>
-                    </div>
-                </div>
-                <div class="m-4 p-4">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border border-solid border-l-0 border-r-0 ">
-                                <th class="px-4 py-2">#</th>
-                                <th class="px-4 py-2">Kategori</th>
-                                <th class="px-4 py-2">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $i = 1; ?>
-                            <?php foreach ($kategori as $row) : ?>
-                                <tr>
-                                    <td class="px-4 py-2"><?php echo $i; ?></td>
-                                    <td class="px-4 py-2"><?php echo $row["kategori"]; ?></td>
-                                    <td class="px-4 py-2">
-                                        <div class="flex gap-2">
-                                            <a href="ubah.php?id=<?php echo $row["id"]; ?>" class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-24 h-8 text-sm font-bold text-white flex items-center justify-center">Ubah</a>
-                                            <a href="hapus.php?id=<?php echo $row["id"]; ?>" onclick ="return confirm ('yakin?');" class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-24 h-8 text-sm font-bold text-white flex items-center justify-center">Hapus</a>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php $i++; ?>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                        <div class="text-center  mt-4 rounded-xl w-24 h-8 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
+                            <button type="submit" name="submit" class=" text-white text-sm font-bold pt-[5px] group-hover:text-[#AC87C5]">
+                                Simpan
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="../../script.js"></script>
-
-
 </body>
 
 </html>

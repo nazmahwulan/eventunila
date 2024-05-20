@@ -8,6 +8,8 @@
     <title>Landing Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/2eb34c602e.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+
 </head>
 
 </head>
@@ -42,45 +44,165 @@
         </div>
     </div>
 
-    <div class="flex justify-center gap-12 mt-16 ">
-        <div class="rounded-xl w-80 h-102 border-4 border-[#AC87C5]">
-            <img class="rounded-t-xl w-80 h-52" src="img/p.jpg">
+
+    <div class="flex flex-wrap  list-none pt-3 pb-4 px-28 ">
+        <div class="flex gap-2 hover:text-[#E0AED0]">
+            <a class="gap-16" href="index.php">
+                <i class="ti ti-home "></i>
+                Beranda</a>
         </div>
-        <div class=" rounded-xl w-80 h-102 border-4 border-[#AC87C5]">
-            <img class="rounded-t-xl w-80 h-52" src="img/p.jpg">
+        <span class="mx-2">/</span>
+        <li class=" active" aria-current="page">Event</li>
+    </div>
+
+
+    <div class="flex justify-center gap-8 grid grid-cols-3 px-28">
+        <div class="rounded-xl  border-2 border-[#AC87C5]">
+            <a href="detailevent.php">
+                <img class="rounded-t-xl " src="img/event.jpg">
+                <div class="px-8 py-6">
+                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
+                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
+                        <div class="flex gap-2">
+                            <i class="ti ti-calendar text-sm"></i>
+                            <p class="text-sm  text-start ">25 Mei 2024</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <i class="ti ti-clock text-sm"></i>
+                            <p class="text-sm  text-start ">10:00 - 13:00</p>
+                        </div>
+                    </div>
+                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
+                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
+                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
+                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
+                </div>
+                <hr class="border-[#AC87C5] ">
+                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
+            </a>
         </div>
-        <div>
-            <img class="rounded-t-xl w-80 h-52" src="img/p.jpg">
-            <div class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] rounded-b-xl w-full h-48">
-            </div>
+        <div class="rounded-xl  border-2 border-[#AC87C5]">
+            <a href="detailevent.php">
+                <img class="rounded-t-xl " src="img/event.jpg">
+                <div class="px-8 py-6">
+                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
+                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
+                        <div class="flex gap-2">
+                            <i class="ti ti-calendar text-sm"></i>
+                            <p class="text-sm  text-start ">25 Mei 2024</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <i class="ti ti-clock text-sm"></i>
+                            <p class="text-sm  text-start ">10:00 - 13:00</p>
+                        </div>
+                    </div>
+                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
+                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
+                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
+                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
+                </div>
+                <hr class="border-[#AC87C5] ">
+                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
+            </a>
+        </div>
+        <div class="rounded-xl  border-2 border-[#AC87C5]">
+            <a href="detailevent.php">
+                <img class="rounded-t-xl " src="img/event.jpg">
+                <div class="px-8 py-6">
+                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
+                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
+                        <div class="flex gap-2">
+                            <i class="ti ti-calendar text-sm"></i>
+                            <p class="text-sm  text-start ">25 Mei 2024</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <i class="ti ti-clock text-sm"></i>
+                            <p class="text-sm  text-start ">10:00 - 13:00</p>
+                        </div>
+                    </div>
+                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
+                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
+                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
+                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
+                </div>
+                <hr class="border-[#AC87C5] ">
+                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
+            </a>
         </div>
     </div>
 
-    <div class="flex justify-center gap-12 mt-8 ">
-        <div class="rounded-xl w-80 h-102 border-4 border-[#AC87C5]">
-            <img class="rounded-t-xl w-80 h-52" src="img/p.jpg">
+    <div class="flex justify-center gap-8 py-12 grid grid-cols-3 px-28">
+        <div class="rounded-xl  border-2 border-[#AC87C5]">
+            <a href="detailevent.php">
+                <img class="rounded-t-xl " src="img/event.jpg">
+                <div class="px-8 py-6">
+                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
+                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
+                        <div class="flex gap-2">
+                            <i class="ti ti-calendar text-sm"></i>
+                            <p class="text-sm  text-start ">25 Mei 2024</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <i class="ti ti-clock text-sm"></i>
+                            <p class="text-sm  text-start ">10:00 - 13:00</p>
+                        </div>
+                    </div>
+                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
+                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
+                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
+                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
+                </div>
+                <hr class="border-[#AC87C5] ">
+                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
+            </a>
         </div>
-        <div class=" rounded-xl w-80 h-102 border-4 border-[#AC87C5]">
-            <img class="rounded-t-xl w-80 h-52" src="img/p.jpg">
+        <div class="rounded-xl  border-2 border-[#AC87C5]">
+            <a href="detailevent.php">
+                <img class="rounded-t-xl " src="img/event.jpg">
+                <div class="px-8 py-6">
+                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
+                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
+                        <div class="flex gap-2">
+                            <i class="ti ti-calendar text-sm"></i>
+                            <p class="text-sm  text-start ">25 Mei 2024</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <i class="ti ti-clock text-sm"></i>
+                            <p class="text-sm  text-start ">10:00 - 13:00</p>
+                        </div>
+                    </div>
+                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
+                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
+                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
+                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
+                </div>
+                <hr class="border-[#AC87C5] ">
+                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
+            </a>
         </div>
-        <div>
-            <img class="rounded-t-xl w-80 h-52" src="img/p.jpg">
-            <div class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] rounded-b-xl w-full h-48">
-            </div>
-        </div>
-    </div>
-
-    <div class="flex justify-center gap-12 mt-8 ">
-        <div class="rounded-xl w-80 h-102 border-4 border-[#AC87C5]">
-            <img class="rounded-t-xl w-80 h-52" src="img/p.jpg">
-        </div>
-        <div class=" rounded-xl w-80 h-102 border-4 border-[#AC87C5]">
-            <img class="rounded-t-xl w-80 h-52" src="img/p.jpg">
-        </div>
-        <div>
-            <img class="rounded-t-xl w-80 h-52" src="img/p.jpg">
-            <div class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] rounded-b-xl w-full h-48">
-            </div>
+        <div class="rounded-xl  border-2 border-[#AC87C5]">
+            <a href="detailevent.php">
+                <img class="rounded-t-xl " src="img/event.jpg">
+                <div class="px-8 py-6">
+                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
+                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
+                        <div class="flex gap-2">
+                            <i class="ti ti-calendar text-sm"></i>
+                            <p class="text-sm  text-start ">25 Mei 2024</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <i class="ti ti-clock text-sm"></i>
+                            <p class="text-sm  text-start ">10:00 - 13:00</p>
+                        </div>
+                    </div>
+                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
+                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
+                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
+                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
+                </div>
+                <hr class="border-[#AC87C5] ">
+                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
+            </a>
         </div>
     </div>
 
