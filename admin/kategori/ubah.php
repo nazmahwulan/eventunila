@@ -1,27 +1,30 @@
 <?php
 //koneksi dengan database
 include '../../function.php';
-
+session_start();
 //ambil data di URL
-$id= $_GET["id"];
-    //query data mahasiswa berdasarkan id
-$kategori = query ("SELECT *FROM kategori WHERE id=$id")[0];
+$id = $_GET["id"];
+//query data mahasiswa berdasarkan id
+$kategori = query("SELECT *FROM kategori WHERE id=$id")[0];
 
 //cek apakah tombol submit sudah ditekan apa belum
-if(isset($_POST["submit"])){
-
-    //cek apakah data berhasil diubah atau tidak 
-    if(ubah ($_POST) > 0){
-        echo "<script>
-        alert('kategori berhasil diubah!');
-        document.location.href = 'index.php'
-        </script>";
-    }else {
-        echo"<script>
-        alert('kategori gagal  diubah!');
-        document.location.href = 'index.php'
-        </script>";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (ubah($_POST) > 0) {
+        // Set flashdata untuk sukses
+        $_SESSION['flash'] = [
+            'message' => 'Kategori berhasil diubah!',
+            'type' => 'success'
+        ];
+    } else {
+        // Set flashdata untuk error
+        $_SESSION['flash'] = [
+            'message' => 'Gagal menambahkan kategori!',
+            'type' => 'error'
+        ];
     }
+    // Redirect ke halaman kategori
+    header('Location: index.php');
+    exit;
 }
 ?>
 
@@ -74,7 +77,7 @@ if(isset($_POST["submit"])){
             <div class="flex justify-center">
                 <div class="bg-white rounded-xl shadow-xl w-[1000px] h-3/5 mx-6 p-6">
                     <form action="" method="post">
-                    <input type="hidden" name="id" value="<?php echo $kategori["id"]; ?> ">
+                        <input type="hidden" name="id" value="<?php echo $kategori["id"]; ?> ">
                         <label for="kategori" class="text-[#AC87C5] font-bold text-lg">Kategori</label>
                         <div class="mt-2">
                             <input type="text" class="px-4 w-full h-10 bg-white shadow-2xl rounded-xl border-2 border-[#756AB6]" name="kategori" id="kategori" required value="<?php echo $kategori["kategori"]; ?>">
@@ -91,21 +94,9 @@ if(isset($_POST["submit"])){
     </div>
 
     <script src="../../script.js"></script>
-    <script>
-    
-    document.addEventListener("DOMContentLoaded", function() {
-    let currentUrl = window.location.href;
 
-    document.querySelectorAll('.nav-link').forEach(function(link) {
-        if (currentUrl === link.href) {
-            link.classList.add('active');
-            // Menambahkan kelas Tailwind secara langsung
-            link.classList.add('text-white', 'w-11/12', 'rounded-r-full', 'bg-gradient-to-b', 'from-[#AC87C5]', 'via-[#E0AED0]', 'to-[#FFE5E5]');
-        }
-    });
-});</script>
-
-
+   
+ 
 </body>
 
 </html>

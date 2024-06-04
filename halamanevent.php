@@ -1,3 +1,32 @@
+<?php
+include 'function.php';
+include 'navbar.php';
+
+//pagination
+$jumlahDataPerHalaman = 6;
+$events = query("SELECT * FROM events");
+$jumlahData = count($events);
+$jumlahHalaman = ceil($jumlahData / $jumlahDataPerHalaman);
+$halamanAktif = (isset($_GET["halaman"])) ? $_GET["halaman"] : 1;
+$awalData = ($jumlahDataPerHalaman * $halamanAktif) - $jumlahDataPerHalaman;
+
+$event = query("SELECT * FROM events WHERE events.status ='disetujui' ORDER BY id LIMIT $awalData, $jumlahDataPerHalaman");
+
+// Mendapatkan kata kunci pencarian dari URL
+$searchKeyword = isset($_POST['keyword']) ? $_POST['keyword'] : '';
+
+// Cari event berdasarkan kata kunci pencarian
+// if ($searchKeyword) {
+//     // Panggil fungsi pencarian
+//     $events = cari3($searchKeyword);
+// } else {
+//     // Jika tidak ada kata kunci pencarian, tampilkan semua event
+//     $query_all_events = "SELECT events.*, kategori.kategori FROM events JOIN kategori ON events.kategori_id = kategori.id";
+//     $result_all_events = mysqli_query($conn, $query_all_events);
+//     $events = mysqli_fetch_all($result_all_events, MYSQLI_ASSOC);
+// }
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,197 +44,94 @@
 </head>
 
 <body>
-    <div class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0]">
-        <div class="items-center flex px-28 py-6 justify-between">
-            <a class="text-white text-4xl font-bold" href="index.php">EventUnila</a>
-            <div class="flex gap-4">
-                <div class="mx-auto rounded-full w-24 h-10 border-2 border-white">
-                    <div class="text-center text-white text-sm font-bold pt-[8px]">
-                        <a href="daftar.php">Daftar</a>
-                    </div>
-                </div>
-                <div class="mx-auto rounded-full w-24 h-10 border-2 border-white">
-                    <div class="text-center text-white text-sm font-bold pt-[8px]">
-                        <a href="login.php">Masuk</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    </div>
-
     <div class="px-28 mt-[100px] flex justify-between">
         <h1 class="text-[#756AB6] font-bold text-3xl">Event Mendatang</h1>
-        <div class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] rounded-full w-44 h-10 ">
-            <div class="text-center pt-[6px]">
-                <a class="text-white text-sm font-bold" href="">Kategori</a>
-            </div>
-        </div>
+        <form action="halamanevent.php" method="post" class="flex items-center">
+            <select name="kategori" class="px-4 w-44 h-10 bg-white shadow-2xl rounded-xl border-2 border-[#756AB6]" onchange="this.form.submit()">
+                <option class="text-black font-bold text-sm" value="">Pilih Kategori</option>
+                <?php
+                $kategori = getkategori();
+                foreach ($kategori as $row) {
+                    $selected = isset($_POST['kategori']) && $_POST['kategori'] == $row['id'] ? 'selected' : '';
+                    echo "<option value='" . $row['id'] . "' $selected>" . $row['kategori'] . "</option>";
+                }
+                ?>
+            </select>
+        </form>
     </div>
 
-
-    <div class="flex flex-wrap  list-none pt-3 pb-4 px-28 ">
-        <div class="flex gap-2 hover:text-[#E0AED0]">
-            <a class="gap-16" href="index.php">
-                <i class="ti ti-home "></i>
-                Beranda</a>
+    <div class="flex flex-wrap list-none my-4 px-32 ">
+        <div class="flex hover:text-[#756AB6] font-semibold">
+            <a href="index.php">
+                <i class="ti ti-home-filled pr-2"></i>Beranda</a>
         </div>
         <span class="mx-2">/</span>
-        <li class=" active" aria-current="page">Event</li>
+        <a href="halamanevent.php">
+            <li class="text-[#756AB6] font-semibold">Event</li>
+        </a>
+        <!-- <span class="mx-2">/</span>
+        <li class="text-[#756AB6] font-semibold"><?php echo htmlspecialchars($searchKeyword); ?></li> -->
     </div>
 
 
-    <div class="flex justify-center gap-8 grid grid-cols-3 px-28">
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <a href="detailevent.php">
-                <img class="rounded-t-xl " src="img/event.jpg">
-                <div class="px-8 py-6">
-                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
-                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
-                        <div class="flex gap-2">
-                            <i class="ti ti-calendar text-sm"></i>
-                            <p class="text-sm  text-start ">25 Mei 2024</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <i class="ti ti-clock text-sm"></i>
-                            <p class="text-sm  text-start ">10:00 - 13:00</p>
-                        </div>
-                    </div>
-                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
-                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
-                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
-                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
-                </div>
-                <hr class="border-[#AC87C5] ">
-                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
-            </a>
+    <?php
+    $kategori_id = isset($_POST['kategori']) ? $_POST['kategori'] : '';
+    $events = getEvents($kategori_id, $searchKeyword);
+    ?>
+    <?php if ($searchKeyword && empty($events)) : ?>
+        <div class="mx-auto px-28">
+            <p>Data tidak ditemukan untuk kata kunci"<?php echo htmlspecialchars($searchKeyword); ?>".</p>
         </div>
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <a href="detailevent.php">
-                <img class="rounded-t-xl " src="img/event.jpg">
-                <div class="px-8 py-6">
-                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
-                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
-                        <div class="flex gap-2">
-                            <i class="ti ti-calendar text-sm"></i>
-                            <p class="text-sm  text-start ">25 Mei 2024</p>
+    <?php else : ?>
+        <div class="flex justify-center gap-8 grid grid-cols-3 px-28">
+            <?php foreach ($events as $row) : ?>
+                <?php
+                $date = date_create($row['tanggal']);
+                $time = date_create($row['waktu']);
+                ?>
+                <div class="rounded-xl border-2 border-[#AC87C5]">
+                    <a href="detailevent.php?id=<?php echo $row["id"]; ?>">
+                        <img class="rounded-t-xl w-full h-52" src="img/<?php echo $row["gambar"]; ?>">
+                        <div class="px-8 py-6">
+                            <h4 class="truncate text-xl font-bold mb-2"><?php echo $row["judul"]; ?></h4>
+                            <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
+                                <div class="flex items-center gap-2">
+                                    <i class="ti ti-calendar text-base"></i>
+                                    <p class="text-sm text-start"><?php echo date_format($date, "d M Y"); ?></p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="ti ti-clock text-base"></i>
+                                    <p class="text-sm text-start"><?php echo date_format($time, "H:i"); ?> WIB</p>
+                                </div>
+                            </div>
+                            <p class="truncate text-justify text-sm"><?php echo $row["deskripsi"]; ?></p>
                         </div>
-                        <div class="flex gap-2">
-                            <i class="ti ti-clock text-sm"></i>
-                            <p class="text-sm  text-start ">10:00 - 13:00</p>
-                        </div>
-                    </div>
-                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
-                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
-                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
-                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
+                        <hr class="border-[#AC87C5]">
+                        <div class="text-base font-bold text-center px-10 py-2"><?php echo $row["penyelenggara"]; ?></div>
+                    </a>
                 </div>
-                <hr class="border-[#AC87C5] ">
-                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
-            </a>
+            <?php endforeach; ?>
         </div>
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <a href="detailevent.php">
-                <img class="rounded-t-xl " src="img/event.jpg">
-                <div class="px-8 py-6">
-                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
-                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
-                        <div class="flex gap-2">
-                            <i class="ti ti-calendar text-sm"></i>
-                            <p class="text-sm  text-start ">25 Mei 2024</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <i class="ti ti-clock text-sm"></i>
-                            <p class="text-sm  text-start ">10:00 - 13:00</p>
-                        </div>
-                    </div>
-                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
-                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
-                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
-                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
-                </div>
-                <hr class="border-[#AC87C5] ">
-                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
-            </a>
-        </div>
-    </div>
+    <?php endif; ?>
 
-    <div class="flex justify-center gap-8 py-12 grid grid-cols-3 px-28">
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <a href="detailevent.php">
-                <img class="rounded-t-xl " src="img/event.jpg">
-                <div class="px-8 py-6">
-                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
-                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
-                        <div class="flex gap-2">
-                            <i class="ti ti-calendar text-sm"></i>
-                            <p class="text-sm  text-start ">25 Mei 2024</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <i class="ti ti-clock text-sm"></i>
-                            <p class="text-sm  text-start ">10:00 - 13:00</p>
-                        </div>
-                    </div>
-                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
-                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
-                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
-                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
-                </div>
-                <hr class="border-[#AC87C5] ">
-                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
-            </a>
-        </div>
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <a href="detailevent.php">
-                <img class="rounded-t-xl " src="img/event.jpg">
-                <div class="px-8 py-6">
-                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
-                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
-                        <div class="flex gap-2">
-                            <i class="ti ti-calendar text-sm"></i>
-                            <p class="text-sm  text-start ">25 Mei 2024</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <i class="ti ti-clock text-sm"></i>
-                            <p class="text-sm  text-start ">10:00 - 13:00</p>
-                        </div>
-                    </div>
-                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
-                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
-                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
-                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
-                </div>
-                <hr class="border-[#AC87C5] ">
-                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
-            </a>
-        </div>
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <a href="detailevent.php">
-                <img class="rounded-t-xl " src="img/event.jpg">
-                <div class="px-8 py-6">
-                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
-                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
-                        <div class="flex gap-2">
-                            <i class="ti ti-calendar text-sm"></i>
-                            <p class="text-sm  text-start ">25 Mei 2024</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <i class="ti ti-clock text-sm"></i>
-                            <p class="text-sm  text-start ">10:00 - 13:00</p>
-                        </div>
-                    </div>
-                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
-                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
-                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
-                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
-                </div>
-                <hr class="border-[#AC87C5] ">
-                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
-            </a>
-        </div>
-    </div>
 
+    <div class="flex justify-end mt-4 px-28">
+        <?php if ($halamanAktif > 1) : ?>
+            <a class="border border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $halamanAktif - 1; ?>">&laquo;</a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $jumlahHalaman; $i++) : ?>
+            <?php if ($i == $halamanAktif) : ?>
+                <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold text-white bg-gradient-to-r from-[#AC87C5] to-[#E0AED0]" href="?halaman=<?= $i; ?>"><?= $i; ?> </a>
+            <?php else : ?>
+                <a class=" border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $i; ?>"><?= $i; ?> </a>
+            <?php endif; ?>
+        <?php endfor; ?>
+
+        <?php if ($halamanAktif < $jumlahHalaman) : ?>
+            <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $halamanAktif + 1; ?>">&raquo;</a>
+        <?php endif; ?>
+    </div>
 
     <div class="flex items-center px-28 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] mt-[100px] h-[200px]">
         <div class="flex-1 ">
@@ -233,13 +159,7 @@
         </div>
     </div>
 
-
-
-
-
-
-
-
+    <script src="script.js"></script>
 </body>
 
 </html>

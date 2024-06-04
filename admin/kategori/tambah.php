@@ -1,23 +1,28 @@
 <?php
 //koneksi dengan database
 include '../../function.php';
+session_start();
 
-//cek apakah tombol submit sudah ditekan apa belum
-if (isset($_POST["submit"])) {
-    //cek apakah data berhasil ditambahkan atau tidak 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (tambah($_POST) > 0) {
-        echo "<script>
-        alert('kategori berhasil ditambahkan!');
-        document.location.href = 'index.php'
-        </script>";
+        // Set flashdata untuk sukses
+        $_SESSION['flash'] = [
+            'message' => 'Kategori berhasil ditambahkan!',
+            'type' => 'success'
+        ];
     } else {
-        echo "<script>
-        alert('kategori gagal  ditambahkan!');
-        document.location.href = 'index.php'
-        </script>";
+        // Set flashdata untuk error
+        $_SESSION['flash'] = [
+            'message' => 'Gagal menambahkan kategori!',
+            'type' => 'error'
+        ];
     }
+    // Redirect ke halaman kategori
+    header('Location: index.php');
+    exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -83,6 +88,20 @@ if (isset($_POST["submit"])) {
     </div>
 
     <script src="../../script.js"></script>
+    <script>
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Navbar active link
+    let currentUrl = window.location.href;
+    document.querySelectorAll('.nav-link').forEach(function (link) {
+        if (currentUrl === link.href) {
+            link.classList.add('active');
+            link.classList.add('text-white', 'w-11/12', 'rounded-r-full', 'bg-gradient-to-b', 'from-[#AC87C5]', 'via-[#E0AED0]', 'to-[#FFE5E5]');
+        }
+    });
+});
+
+   </script>
 </body>
 
 </html>

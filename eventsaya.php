@@ -1,7 +1,14 @@
 <?php
+include 'function.php';
+include 'navbar.php';
 
-include "navbar.php";
-?>;
+// $user_id = $_SESSION['user_id'];
+$id = $_GET["id"];
+
+// Query untuk mendapatkan event yang hanya milik pengguna yang sedang login
+$users = query("SELECT events.*, users.* FROM events JOIN users ON events.users_id = users.id WHERE users.id = '$id'");
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,6 +23,15 @@ include "navbar.php";
 </head>
 
 <body>
+    <div class="flex flex-wrap list-none my-4 px-32 ">
+        <div class="flex hover:text-[#756AB6] font-semibold">
+            <a href="index.php">
+                <i class="ti ti-home-filled pr-2"></i>Beranda</a>
+        </div>
+        <span class="mx-2">/</span>
+        <li class="text-[#756AB6] font-semibold">Event Saya</li>
+    </div>
+
     <div class="flex justify-center gap-8 py-12 grid grid-cols-3 px-28">
         <div class="rounded-xl border-2 border-[#AC87C5] flex flex-col items-center justify-center">
             <a href="daftarevent.php" class="text-center">
@@ -23,55 +39,50 @@ include "navbar.php";
                 <p class="text-[#AC87C5] font-bold">Buat Event <br> Baru</p>
             </a>
         </div>
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <img class="rounded-t-xl " src="img/event.jpg">
-            <div class="flex flex-col">
-                <h1 class="text-[#AC87C5] text-sm font-bold text-center mt-4 px-10">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h1>
-                <hr class="border-[#AC87C5] mt-4 w-[300px] mx-auto">
-                <div class="text-[#AC87C5] text-sm font-bold mt-4 px-6">
-                    <p>Tanggal & Waktu</p>
-                    <p>26 Apr 2024</p>
-                    <p>14:00 - 17:30 WIB</p>
-                    <div class="mt-4">
-                        <p>Lokasi</p>
-                        <p>Jakarta Design Center,
-                            Jl. Gatot Subroto No.53, Tanah Abang,
-                            Jakarta Pusat</p>
-                    </div>
-                </div>
-                <div class="py-6">
-                    <div class="mx-auto rounded-xl w-40 h-10 border-2 border-red-600 text-center text-red-600 text-sm font-bold pt-[8px]">Sedang Diajukan</div>
-                </div>
-            </div>
-        </div>
+        <?php foreach ($users as $row) : ?>
+            <?php
+            $status = strtolower($row['status']); // Mengonversi status menjadi huruf kecil
+            $date = date_create($row['tanggal']);
+            $time = date_create($row['waktu']);
+            // $eventStatus = strtolower($row['tanggal']); // Mendapatkan status tanggal (mendatang atau selesai)
 
-
-
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <a href="detailevent.php">
-                <img class="rounded-t-xl " src="img/event.jpg">
+            // Menentukan kelas warna berdasarkan status pengajuan
+            $statusClass = '';
+            if ($status === 'disetujui') {
+                $statusClass = 'bg-emerald-600'; // Hijau untuk disetujui
+            } elseif ($status === 'ditolak') {
+                $statusClass = 'bg-rose-600'; // Merah untuk ditolak
+            } elseif ($status === 'sedang diajukan') {
+                $statusClass = 'bg-yellow-500'; // Kuning untuk sedang diajukan
+            } else {
+                $statusClass = 'bg-gray-500'; // Warna default jika status tidak dikenali
+            }
+            ?>
+            <div class="rounded-xl  border-2 border-[#AC87C5]">
+                <!-- <a href="detailevent.php?id=<?php echo $row['id']; ?>"> -->
+                <img class="rounded-t-xl w-full h-52 " src="img/<?php echo $row["gambar"]; ?>">
                 <div class="px-8 py-6">
-                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
+                    <h4 class="truncate text-xl font-bold mb-2"><?php echo $row["judul"]; ?></h4>
                     <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
-                        <div class="flex gap-2">
-                            <i class="ti ti-calendar text-sm"></i>
-                            <p class="text-sm  text-start ">25 Mei 2024</p>
+                        <div class="flex items-center gap-2">
+                            <i class="ti ti-calendar text-base font-bold"></i>
+                            <p class="text-sm  text-start "><?php echo date_format($date, "d M Y"); ?></p>
                         </div>
-                        <div class="flex gap-2">
-                            <i class="ti ti-clock text-sm"></i>
-                            <p class="text-sm  text-start ">10:00 - 13:00</p>
+                        <div class="flex items-center gap-2">
+                            <i class="ti ti-clock text-base font-bold"></i>
+                            <p class="text-sm text-start "><?php echo date_format($time, "H:i"); ?> WIB </p>
                         </div>
                     </div>
-                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
-                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
-                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
-                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
+                    <p class="truncate text-justify text-sm"><?php echo $row["deskripsi"]; ?></p>
                 </div>
                 <hr class="border-[#AC87C5] ">
-                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
-            </a>
-        </div>
+                <div class="<?php echo $statusClass; ?> rounded-b-xl text-base font-bold text-center text-white px-10 py-2 "><?php echo $row["status"]; ?></div>
+                </a>
+            </div>
+        <?php endforeach; ?>
     </div>
+
+
 
     <!--footer-->
     <div class="flex items-center px-28 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] mt-[50px] h-[200px]">
@@ -99,6 +110,7 @@ include "navbar.php";
             </div>
         </div>
     </div>
+    <script src="script.js"></script>
 </body>
 
 </html>

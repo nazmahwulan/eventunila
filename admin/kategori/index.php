@@ -1,8 +1,12 @@
 <?php
 include '../../function.php';
 $kategori = query("SELECT *FROM kategori");
-
+session_start();
+// Cek apakah ada flashdata
+$flash = isset($_SESSION['flash']) ? $_SESSION['flash'] : null;
+unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,6 +16,19 @@ $kategori = query("SELECT *FROM kategori");
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                setTimeout(() => {
+                    flashMessage.classList.add('opacity-0');
+                    setTimeout(() => {
+                        flashMessage.remove();
+                    }, 1000); // Waktu animasi untuk transisi opacity
+                }, 3000); // Waktu menunggu sebelum menutup
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -35,57 +52,70 @@ $kategori = query("SELECT *FROM kategori");
                     <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
                 </a>
             </nav>
-
             <div class="px-12 mt-40 mb-10">
                 <hr class="border-[#AC87C5] border-1 mb-8">
                 <i class="ti ti-user-circle ps-2  text-[#AC87C5] text-4xl"></i>
                 <p class="text-[#AC87C5] text-base font-bold mt-2">Nazmah Wulan</p>
             </div>
         </div>
-
         <div class="">
             <h1 class="text-white font-bold text-4xl py-6 ">Kategori</h1>
             <div class="flex justify-center">
                 <hr class="border-white border-1 w-[1050px]">
             </div>
             <h2 class="text-white font-bold text-4xl flex justify-center py-6">Daftar Kategori</h2>
-            <div class="bg-white rounded-xl shadow-xl w-[1000px] h-3/5 mx-6">
-                <div class="flex justify-end pr-6 pt-6">
-                    <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-44 h-10 ">
-                        <div class="text-center pt-[6px] ">
-                            <a class="text-white gap-2 text-base flex justify-center" href="tambah.php">
-                                <i class="ti ti-circle-plus text-xl"></i><span>Tambah Kategori</span>
+            <div class="bg-white w-[1000px] shadow-xl rounded-xl p-6 mx-6">
+                <div class="flex justify-end gap-2 mb-5">
+                    <?php if ($flash) : ?>
+                        <div id="flash-message" class="flex-1">
+                            <div class="px-4 py-2 rounded-xl text-white <?php echo ($flash['type'] == 'success') ? 'bg-green-500' : ($flash['type'] == 'error' ? 'bg-red-500' : ($flash['type'] == 'warning' ? 'bg-yellow-500' : 'bg-blue-500')); ?>">
+                                <?php echo $flash['message']; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-44 h-10 hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
+                        <div class="text-center pt-[6px]">
+                            <a class="text-white gap-2 text-base flex justify-center font-bold group-hover:text-[#AC87C5] " href="tambah.php">
+                                <i class="ti ti-plus text-xl font-bold "></i><span>Tambah Kategori</span>
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="m-4 p-4">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border border-solid border-l-0 border-r-0 ">
-                                <th class="px-4 py-2">#</th>
-                                <th class="px-4 py-2">Kategori</th>
-                                <th class="px-4 py-2">Aksi</th>
+                <table class="min-w-full divide-y divide-gray-200 w-full">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-sm font-bold uppercase tracking-wider">#</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-sm font-bold uppercase tracking-wider">Kategori</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-sm font-bold uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php if (empty($kategori)) : ?>
+                            <tr>
+                                <td colspan="6" class="px-4 py-2 text-center text-sm leading-tight">
+                                    Tidak ada data
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
+                        <?php else : ?>
                             <?php $i = 1; ?>
                             <?php foreach ($kategori as $row) : ?>
                                 <tr>
-                                    <td class="px-4 py-2"><?php echo $i; ?></td>
-                                    <td class="px-4 py-2"><?php echo $row["kategori"]; ?></td>
-                                    <td class="px-4 py-2">
+                                    <td class="px-4 py-2 whitespace-nowrap text-sm leading-tight"><?php echo $i; ?></td>
+                                    <td class="px-4 py-2 whitespace-normal text-sm leading-tight"><?php echo $row["kategori"]; ?></td>
+
+
+                                    <td class="px-4 py-2 whitespace-nowrap text-sm leading-tight">
                                         <div class="flex gap-2">
-                                            <a href="ubah.php?id=<?php echo $row["id"]; ?>" class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-24 h-8 text-sm font-bold text-white flex items-center justify-center">Ubah</a>
-                                            <a href="hapus.php?id=<?php echo $row["id"]; ?>" onclick ="return confirm ('yakin?');" class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-full w-24 h-8 text-sm font-bold text-white flex items-center justify-center">Hapus</a>
-                                        </a>
+                                            <a href="ubah.php?id=<?php echo $row["id"]; ?>" class=" ti ti-edit bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-8 h-8 text-sm  text-white flex items-center justify-center hover:bg-none hover:border-2 hover:border-[#AC87C5] hover:text-[#AC87C5]"></a>
+                                            <a href="hapus.php?id=<?php echo $row["id"]; ?>" onclick="return confirm('yakin?');" class="ti ti-trash bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-8 h-8 text-sm text-white flex items-center justify-center hover:bg-none hover:border-2 hover:border-[#AC87C5] hover:text-[#AC87C5]"></a>
+                                        </div>
                                     </td>
                                 </tr>
                                 <?php $i++; ?>
                             <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

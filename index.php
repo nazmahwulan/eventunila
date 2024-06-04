@@ -1,5 +1,5 @@
 <?php
-
+include 'function.php';
 include 'navbar.php';
 // session_start();
 // if (!isset($_SESSION["login"])) {
@@ -11,6 +11,7 @@ include 'navbar.php';
 //     exit;
 // }
 
+$event = query("SELECT *FROM events WHERE events.status ='disetujui' ORDER BY id");
 
 ?>
 
@@ -77,90 +78,42 @@ include 'navbar.php';
     </div>
 
     <div class="flex justify-center gap-8 py-12 grid grid-cols-3 px-28">
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <a href="detailevent.php">
-                <img class="rounded-t-xl " src="img/event.jpg">
-                <div class="px-8 py-6">
-                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
-                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
-                        <div class="flex gap-2">
-                            <i class="ti ti-calendar text-sm"></i>
-                            <p class="text-sm  text-start ">25 Mei 2024</p>
+        <?php foreach ($event as $row) : ?>
+            <?php
+            $date = date_create($row['tanggal']);
+            $time = date_create($row['waktu']);
+            ?>
+            <div class="rounded-xl  border-2 border-[#AC87C5]">
+                <a href="detailevent.php">
+                    <img class="rounded-t-xl w-full h-52" src="img/<?php echo $row["gambar"]; ?>">
+                    <div class="px-8 py-6">
+                        <h4 class="truncate text-xl font-bold mb-2"><?php echo $row["judul"]; ?></h4>
+                        <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
+                            <div class="flex items-center gap-2">
+                                <i class="ti ti-calendar text-base"></i>
+                                <p class="text-sm  text-start "><?php echo date_format($date, "d M Y"); ?></p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="ti ti-clock text-base"></i>
+                                <p class="text-sm  text-start "><?php echo date_format($time, "H:i"); ?> WIB</p>
+                            </div>
                         </div>
-                        <div class="flex gap-2">
-                            <i class="ti ti-clock text-sm"></i>
-                            <p class="text-sm  text-start ">10:00 - 13:00</p>
-                        </div>
+                        <p class="truncate text-justify text-sm"><?php echo $row["deskripsi"]; ?></p>
                     </div>
-                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
-                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
-                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
-                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
-                </div>
-                <hr class="border-[#AC87C5] ">
-                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
-            </a>
-        </div>
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <a href="detailevent.php">
-                <img class="rounded-t-xl " src="img/event.jpg">
-                <div class="px-8 py-6">
-                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
-                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
-                        <div class="flex gap-2">
-                            <i class="ti ti-calendar text-sm"></i>
-                            <p class="text-sm  text-start ">25 Mei 2024</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <i class="ti ti-clock text-sm"></i>
-                            <p class="text-sm  text-start ">10:00 - 13:00</p>
-                        </div>
-                    </div>
-                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
-                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
-                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
-                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
-                </div>
-                <hr class="border-[#AC87C5] ">
-                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
-            </a>
-        </div>
-        <div class="rounded-xl  border-2 border-[#AC87C5]">
-            <a href="detailevent.php">
-                <img class="rounded-t-xl " src="img/event.jpg">
-                <div class="px-8 py-6">
-                    <h4 class="truncate text-xl font-bold mb-2">Seminar Internasional : “Building Sustainable Economy Through Smart City Development”</h4>
-                    <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
-                        <div class="flex gap-2">
-                            <i class="ti ti-calendar text-sm"></i>
-                            <p class="text-sm  text-start ">25 Mei 2024</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <i class="ti ti-clock text-sm"></i>
-                            <p class="text-sm  text-start ">10:00 - 13:00</p>
-                        </div>
-                    </div>
-                    <p class="truncate text-justify text-sm">Seminar nasional EEA 2023 merupakan salah satu rangkaian acara Electrical Engineering in Action 2023
-                        yang berlangsung mulai 19 hingga 28 Oktober 2023. EEA 2023 merupakan sebuah wadah bagi para profesional,
-                        praktisi, akademisi, mahasiswa, dan para pemangku kepentingan di bidang ketenagalistrikan dan teknik elektro
-                        untuk berbagi pengetahuan, gagasan, dan inovasi terbaru dalam perkembangan sektor ini.</p>
-                </div>
-                <hr class="border-[#AC87C5] ">
-                <div class="text-base font-bold text-center px-10 py-2 ">HIMATRO</div>
-            </a>
-        </div>
+                    <hr class="border-[#AC87C5] ">
+                    <div class="text-base font-bold text-center px-10 py-2 "><?php echo $row["penyelenggara"]; ?></div>
+                </a>
+            </div>
+        <?php endforeach; ?>  
     </div>
-
-    <!-- <div class="mx-auto bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] rounded-xl w-44 h-10 hover:bg-none hover:border-2 hover:border-[#AC87C5] group ">
-        <div class="text-center pt-[6px] ">
-            <a class="text-white text-sm font-bold group-hover:text-[#AC87C5]" href="halamanevent.php">Lihat Event Lainnya</a>
+    
+    <a href="halamanevent.php">
+        <div class="text-center mx-auto mt-4 rounded-xl w-44 h-10 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
+            <button type="submit" name="event" class=" text-white text-sm font-bold pt-[8px] group-hover:text-[#AC87C5]">
+                Lihat Event Lainnnya
+            </button>
         </div>
-    </div> -->
-    <div class="text-center mx-auto mt-4 rounded-xl w-44 h-10 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
-        <button type="submit" name="event" class=" text-white text-sm font-bold pt-[8px] group-hover:text-[#AC87C5]">
-            Lihat Event Lainnnya
-        </button>
-    </div>
+    </a>
 
     <div class="bg-gradient-to-r from-[#AC87C5] to-[#FFE5E5] flex items-center px-20 mt-24 h-72">
         <div class="mx-auto">
@@ -205,6 +158,7 @@ include 'navbar.php';
         </div>
     </div>
 
+    <script src="script.js"></script>
 
 
 
