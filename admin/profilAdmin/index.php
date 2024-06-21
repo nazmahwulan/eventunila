@@ -1,47 +1,17 @@
 <?php
-// koneksi dengan database
 include '../../function.php';
 session_start();
+ob_start(); // Memulai buffer output
 
-// ambil data di URL
-if (isset($_GET["id"])) {
-    $id = $_GET["id"];
-    // query data mahasiswa berdasarkan id
-    $kategori = query("SELECT * FROM kategori WHERE id=$id")[0];
-} else {
-    // jika tidak ada id, redirect ke halaman lain atau tampilkan pesan error
-    header('Location: /event/admin/kategori/index.php');
-    exit;
-}
-
-// cek apakah tombol submit sudah ditekan apa belum
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (ubah($_POST) > 0) {
-        // Set flashdata untuk sukses
-        $_SESSION['flash'] = [
-            'message' => 'Kategori berhasil diubah!',
-            'type' => 'success'
-        ];
-        // Redirect ke halaman ubah dengan id
-        header('Location: /event/admin/kategori/ubah.php?id=' . $id);
-        exit;
-    } else {
-        // Set flashdata untuk error
-        $_SESSION['flash'] = [
-            'message' => 'Gagal mengubah kategori!',
-            'type' => 'error'
-        ];
-        // Redirect ke halaman ubah dengan id
-        header('Location: /event/admin/kategori/ubah.php?id=' . $id);
-        exit;
-    }
-}
+$id = $_GET["id"];
+//query data mahasiswa berdasarkan id
+$users = query("SELECT *FROM users WHERE id=$id")[0];
 
 // Cek apakah ada flashdata
 $flash = isset($_SESSION['flash']) ? $_SESSION['flash'] : null;
 unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
+ob_end_flush(); // Mengakhiri dan mengirim buffer output
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -75,7 +45,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                 <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php">
+                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?id=<?php echo $_SESSION["users_id"]; ?>">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
                 </a>
                 <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
@@ -99,7 +69,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                 <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?">
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?id=<?php echo $_SESSION["users_id"]; ?>">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
                 </a>
                 <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
@@ -115,42 +85,37 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
         </div>
 
         <div class="">
-        <div class="flex justify-center lg:hidden">
+            <div class="flex justify-center lg:hidden">
                 <hr class="border-white border-1 w-full md:w-[1050px]">
             </div>
-            <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Kategori</h1>
+            <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Profile</h1>
             <div class="hidden lg:flex justify-center">
                 <hr class="border-white border-1 w-[1000px]">
             </div>
-            <h2 class="text-white font-bold text-2xl lg:text-4xl flex justify-center my-6">Ubah Kategori</h2>
+            <h2 class="text-white font-bold text-2xl lg:text-4xl flex justify-center my-6">Daftar Profile</h2>
 
-            <?php if ($flash) : ?>
-                <div id="flash-message" class="flex-1">
-                    <div class="px-4 py-2 rounded-xl text-white <?php echo ($flash['type'] == 'success') ? 'bg-green-500' : ($flash['type'] == 'error' ? 'bg-red-500' : ($flash['type'] == 'warning' ? 'bg-yellow-500' : 'bg-blue-500')); ?>">
-                        <?php echo $flash['message']; ?>
-                    </div>
+            <div class="bg-white lg:w-[1000px] shadow-xl rounded-xl p-6 mx-10 lg:mx-5 overflow-x-auto">
+                <div class="flex justify-end">
+                    <a href="editprofil.php?id=<?php echo $users["id"]; ?>" class="hover:text-[#AC87C5] hover:bg-none hover:border-2 hover:border-[#AC87C5] ti ti-edit bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-8 h-8 text-sm  text-white flex items-center justify-center"></a>
                 </div>
-            <?php endif; ?>
-            <div class="flex justify-center">
-                <div class="bg-white rounded-xl shadow-xl w-[1000px] h-3/5 mx-10 lg:mx-5 p-6 ">
-                    <form action="" method="post">
-                        <input type="hidden" name="id" value="<?php echo $kategori["id"]; ?> ">
-                        <label for="kategori" class="text-[#AC87C5] font-bold text-lg">Kategori</label>
-                        <div class="mt-2">
-                            <input type="text" class="px-4 w-full h-10 bg-white shadow-2xl rounded-xl border-2 border-[#756AB6]" name="kategori" id="kategori" required value="<?php echo $kategori["kategori"]; ?>">
-                        </div>
-                        <div class="text-center mt-4 rounded-xl w-24 h-8 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
-                            <button type="submit" name="submit" class="text-white text-sm font-bold pt-[5px] group-hover:text-[#AC87C5]">
-                                Simpan
-                            </button>
-                        </div>
-                    </form>
+                <input type="hidden" name="id" value="<?php echo $users["id"]; ?> ">
+                <div class="">
+                    <label for="nama" class="block my-2 text-gray-500 font-bold text-sm">Nama</label>
+                    <div class="flex justify-center">
+                        <input type="text" class="bg-gray-100 px-4 w-full h-10 bg-white shadow-2xl rounded-xl border-2 border-[#756AB6]" name="nama" id="nama" value="<?php echo $users["nama"]; ?>" disabled>
+                    </div>
+                    <label for="email" class="block my-2 text-gray-500 font-bold text-sm">Email</label>
+                    <div class="flex justify-center">
+                        <input type="text" class="bg-gray-100 px-4 w-full h-10 bg-white shadow-2xl rounded-xl border-2 border-[#756AB6]" name="email" id="email" value="<?php echo $users["email"]; ?>" disabled>
+                    </div>
+                    <label for="password" class="block my-2 text-gray-500 font-bold text-sm">Kata Sandi</label>
+                    <div class="flex justify-center mb-10">
+                        <input type="password" class="bg-gray-100 px-4 w-full h-10 bg-white shadow-2xl rounded-xl border-2 border-[#756AB6]" name="password" id="password" value="<?php echo $users["password"]; ?>" disabled>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <script src="../../script.js"></script>
+        <script src="../../script.js"></script>
 </body>
 
 </html>

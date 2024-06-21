@@ -23,16 +23,16 @@ $users = query("SELECT events.*, users.* FROM events JOIN users ON events.users_
 </head>
 
 <body>
-    <div class="flex flex-wrap list-none my-4 px-32 ">
+    <div class="flex flex-wrap list-none mx-14 mt-10 lg:mx-32">
         <div class="flex hover:text-[#756AB6] font-semibold">
             <a href="index.php">
-                <i class="ti ti-home-filled pr-2"></i>Beranda</a>
+                <i class="ti ti-home-filled pr-2"></i>Home</a>
         </div>
         <span class="mx-2">/</span>
         <li class="text-[#756AB6] font-semibold">Event Saya</li>
     </div>
 
-    <div class="flex justify-center gap-8 py-12 grid grid-cols-3 px-28">
+    <div class="md:mb-[640px] flex justify-center grid gap-8 my-10 mx-10 lg:mx-28 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <div class="rounded-xl border-2 border-[#AC87C5] flex flex-col items-center justify-center">
             <a href="daftarevent.php" class="text-center">
                 <i class="text-[#AC87C5] text-4xl font-bold ti ti-circle-plus"></i>
@@ -61,7 +61,7 @@ $users = query("SELECT events.*, users.* FROM events JOIN users ON events.users_
             <div class="rounded-xl  border-2 border-[#AC87C5]">
                 <!-- <a href="detailevent.php?id=<?php echo $row['id']; ?>"> -->
                 <img class="rounded-t-xl w-full h-52 " src="img/<?php echo $row["gambar"]; ?>">
-                <div class="px-8 py-6">
+                <div class="mx-8 my-6">
                     <h4 class="truncate text-xl font-bold mb-2"><?php echo $row["judul"]; ?></h4>
                     <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
                         <div class="flex items-center gap-2">
@@ -82,31 +82,30 @@ $users = query("SELECT events.*, users.* FROM events JOIN users ON events.users_
         <?php endforeach; ?>
     </div>
 
-
-
     <!--footer-->
-    <div class="flex items-center px-28 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] mt-[50px] h-[200px]">
-        <div class="flex-1 ">
-            <p class="text-white font-bold text-4xl">EventUnila</p>
-            <p class="text-gray-500 font-bold text-sm mt-4">Kumpulan Pengalaman, <br> Ayo bergabung bersama di EventUnila!</p>
-            <div class="flex gap-4 text-white font-bold text-sm mt-4">
-                <a href="about.php">Tentang Kami </a>
-                <a href="kontak.php">Kontak</a>
-                <a href="kebijakan.php">Kebijakan Pribadi</a>
+    <div class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] mt-40 py-16 px-10 lg:px-28">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div class="mb-6 md:mb-0">
+                <p class="text-white font-bold text-2xl md:text-4xl">EventUnila</p>
+                <p class="text-gray-500 font-bold text-sm mt-4">Kumpulan Pengalaman, <br> Ayo bergabung bersama di EventUnila!</p>
+                <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
+                    <a href="about.php">Tentang Kami</a>
+                    <a href="kontak.php">Kontak</a>
+                    <a href="kebijakan.php">Kebijakan Pribadi</a>
+                </div>
             </div>
-        </div>
-        <div class="flex-1 ml-[400px]">
-            <p class=" flex text-white font-bold text-sm">Jl. Prof. Sumantri Brojonegoro No.1 Gedong Meneng, <br>
-                Bandar Lampung.</p>
-            <div class="flex text-white text-2xl gap-10 mt-4">
-                <a href="https://web.facebook.com/OfficialUnila/?_rdc=1&_rdr"><i class="ti ti-brand-facebook"></i></a>
-                <a href="https://twitter.com/official_unila"><i class="ti ti-brand-twitter"></i></a>
-                <a href="https://www.instagram.com/official_unila"><i class="ti ti-brand-instagram "></i></a>
-                <a href="https://www.tiktok.com/@official_unila"><i class="ti ti-brand-tiktok"></i></a>
-                <a href="https://www.youtube.com/c/OfficialUnila"><i class="ti ti-brand-youtube"></i></a>
-            </div>
-            <div class="text-white font-bold text-sm mt-4">
-                <p>copyright EventUnila © 2024 all rights reserved</p>
+            <div class="text-white font-bold text-sm">
+                <p>Jl. Prof. Sumantri Brojonegoro No.1 Gedong Meneng, <br>Bandar Lampung.</p>
+                <div class="flex gap-5 md:gap-10 text-white text-2xl mt-4">
+                    <a href="https://web.facebook.com/OfficialUnila/?_rdc=1&_rdr"><i class="ti ti-brand-facebook"></i></a>
+                    <a href="https://twitter.com/official_unila"><i class="ti ti-brand-twitter"></i></a>
+                    <a href="https://www.instagram.com/official_unila"><i class="ti ti-brand-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@official_unila"><i class="ti ti-brand-tiktok"></i></a>
+                    <a href="https://www.youtube.com/c/OfficialUnila"><i class="ti ti-brand-youtube"></i></a>
+                </div>
+                <div class="mt-6">
+                    <p>&copy; 2024 EventUnila. All rights reserved.</p>
+                </div>
             </div>
         </div>
     </div>

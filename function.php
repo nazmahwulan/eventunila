@@ -15,22 +15,6 @@ function query($query)
     return $rows;
 }
 
-// function getDbConnection() {
-//     $conn = new mysqli('localhost', 'root', '', 'wisuda');
-//     if ($conn->connect_error) {
-//         die("Connection failed: " . $conn->connect_error);
-//     }
-//     return $conn;
-// }
-
-// function getDbConnection() {
-//     $conn = new mysqli('localhost', 'root', '', 'wisuda');
-//     if ($conn->connect_error) {
-//         die("Connection failed: " . $conn->connect_error);
-//     }
-//     return $conn;
-// }
-
 function getkategori()
 {
     global $conn;
@@ -242,11 +226,6 @@ function tambah($data)
     mysqli_query($conn, $query);
 
     return mysqli_affected_rows($conn);
-    // $data->session->set_flashdata('message', '<div class="alert
-    //  alert succes" role="alert"> Data Berhasil ditambahkan
-    //  <button type="button" class "close" data-dismiss="alert" 
-    //  aria-label="Close"><span aria-hidden="true">&times;</span>
-    //   <button></div>');
 }
 
 function hapus($id)
@@ -405,133 +384,86 @@ function cari2($keyword)
 //     return $result->fetch_all(MYSQLI_ASSOC);
 // }
 
-// function ubahProfil($data) {
-//     global $conn;
-
-//     // Pastikan user_id tersimpan dalam session
-//     if (!isset($_SESSION['user_id'])) {
-//         echo "<script>
-//                 alert('User ID tidak ditemukan');
-//               </script>";
-//         return false;
-//     }
-
-//     $user_id = $_SESSION['user_id'];
-//     $password1 = $data["password1"];
-//     $password2 = $data["password2"];
-//     $password3 = $data["password3"];
-
-//     // Ambil data pengguna dari database
-//     $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
-//     $stmt->bind_param("i", $user_id);
-//     $stmt->execute();
-//     $result = $stmt->get_result();
-//     $user = $result->fetch_assoc();
-
-//     if (!$user) {
-//         echo "<script>
-//                 alert('Pengguna tidak ditemukan');
-//               </script>";
-//         return false;
-//     }
-
-//     // Periksa apakah password lama cocok
-//     if (!password_verify($password1, $user['password1'])) {  // pastikan kolomnya adalah 'password'
-//         echo "<script>
-//                 alert('Password lama salah');
-//               </script>";
-//         return false;
-//     }
-
-//     // Periksa apakah password baru dan konfirmasi password cocok
-//     if ($password2 !== $password3) {
-//         echo "<script>
-//                 alert('Konfirmasi password tidak cocok');
-//               </script>";
-//         return false;
-//     }
-
-//     // Enkripsi password baru
-//     $password2_hashed = password_hash($password2, PASSWORD_DEFAULT);
-
-//     // Update password baru ke dalam database
-//     $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-//     $stmt->bind_param("si", $password2_hashed, $user_id);
-//     $stmt->execute();
-
-//     if ($stmt->affected_rows > 0) {
-//         echo "<script>
-//                 alert('Password berhasil diubah');
-//               </script>";
-//         return true;
-//     } else {
-//         echo "<script>
-//                 alert('Gagal mengubah password');
-//               </script>";
-//         return false;
-//     }
-// }
-
-function ubahProfil($data)
-{
+function ubahProfil($data) {
     global $conn;
 
-    $id = $_GET["id"];
+    $id = $data["id"];
     $nama = htmlspecialchars($data["nama"]);
-    $password1 = mysqli_real_escape_string($conn, $data["password1"]);
+    $password1 = $data["password1"];
+    $password2 = $data["password2"];
+    $password3 = $data["password3"];
 
-    $query = "UPDATE users SET
-                nama= '$nama', password='$password1'
-                WHERE id = $id
-                ";
+    // Ambil data pengguna dari database
+    $result = mysqli_query($conn, "SELECT * FROM users WHERE id = '$id'");
+    $user = mysqli_fetch_assoc($result);
+
+    // Periksa apakah semua field password kosong
+    if (empty($password1) && empty($password2) && empty($password3)) {
+        // Update hanya nama ke dalam database
+        $query = "UPDATE users SET nama = '$nama' WHERE id = '$id'";
+        mysqli_query($conn, $query);
+
+        return mysqli_affected_rows($conn);
+    }
+
+    // Periksa apakah salah satu field password diisi
+    if (!empty($password1) || !empty($password2) || !empty($password3)) {
+        // Periksa apakah password lama cocok
+        if (!password_verify($password1, $user['password'])) {
+            echo "<script>
+                    alert('Password lama salah');
+                  </script>";
+            return false;
+        }
+
+        // Periksa apakah password baru dan konfirmasi password cocok
+        if ($password2 !== $password3) {
+            echo "<script>
+                    alert('Konfirmasi password tidak cocok');
+                  </script>";
+            return false;
+        }
+
+        // Enkripsi password baru
+        $password2 = password_hash($password2, PASSWORD_DEFAULT);
+
+        // Update nama dan password baru ke dalam database
+        $query = "UPDATE users SET nama = '$nama', password = '$password2' WHERE id = '$id'";
+        mysqli_query($conn, $query);
+
+        return mysqli_affected_rows($conn);
+    }
+
+    // Jika tidak ada field password yang diisi, update hanya nama
+    $query = "UPDATE users SET nama = '$nama' WHERE id = '$id'";
     mysqli_query($conn, $query);
 
     return mysqli_affected_rows($conn);
 }
 
-// function ubahProfil($data) {
-//     global $conn;
-
-//     $id = $data["id"];
-//     $nama = htmlspecialchars($data["nama"]);
-//     $password1= $data["password1"];
-//     $password2 = $data["password2"];
-//     $password3= $data["password3"];
-
-//     // Ambil data pengguna dari database
-//     $result = mysqli_query($conn, "SELECT * FROM users WHERE id = '$id'");
-//     $user = mysqli_fetch_assoc($result);
-
-//     // Periksa apakah password lama cocok
-//     if (!password_verify($password1, $user['password'])) {
-//         echo "<script>
-//                 alert('Password lama salah');
-//               </script>";
-//         return false;
-//     }
-
-//     // Periksa apakah password baru dan konfirmasi password cocok
-//     if ($password2!== $password3) {
-//         echo "<script>
-//                 alert('Konfirmasi password tidak cocok');
-//               </script>";
-//         return false;
-//     }
-
-//     // Enkripsi password baru
-//     $password2 = password_hash($password2, PASSWORD_DEFAULT);
-
-//     // Update nama dan password baru ke dalam database
-//     $query = "UPDATE users SET nama = '$nama', password = '$password2' WHERE id = '$id'";
-//     mysqli_query($conn, $query);
-
-//     return mysqli_affected_rows($conn);
-// }
 
 function countActiveEvents()
 {
     global $conn;
     $sql = "SELECT COUNT(*) as count FROM events WHERE status = 'disetujui'";
+    $result = $conn->query($sql);
+    $count = $result->fetch_assoc()['count'];
+    return $count;
+}
+
+function countPendingEvents()
+{
+    global $conn;
+    $sql = "SELECT COUNT(*) as count FROM events WHERE status = 'sedang diajukan'";
+    $result = $conn->query($sql);
+    $count = $result->fetch_assoc()['count'];
+    return $count;
+}
+
+function countRejectedEvents()
+{
+    global $conn;
+    $sql = "SELECT COUNT(*) as count FROM events WHERE status = 'ditolak'";
     $result = $conn->query($sql);
     $count = $result->fetch_assoc()['count'];
     return $count;
@@ -549,7 +481,16 @@ function countCategories()
 function countUsers()
 {
     global $conn;
-    $sql = "SELECT COUNT(*) as count FROM users";
+    $sql = "SELECT COUNT(*) as count FROM users WHERE role = 'pengguna'";
+    $result = $conn->query($sql);
+    $count = $result->fetch_assoc()['count'];
+    return $count;
+}
+
+function countAdmin()
+{
+    global $conn;
+    $sql = "SELECT COUNT(*) as count FROM users WHERE role = 'admin'";
     $result = $conn->query($sql);
     $count = $result->fetch_assoc()['count'];
     return $count;

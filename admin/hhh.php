@@ -1,62 +1,47 @@
-<?php
-include '../function.php';
-
-$kategori = query("SELECT *FROM kategori");
-
-
-?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/2eb34c602e.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Table with Tailwind CSS</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-
-<body>
-
-    <form action="" method="post" class="">
-        <input type="text" class="" name="keyword" placeholder="Cari Event" autocomplete="off">
-        <button type="submit" name="cari" class=""></button>
-    </form>
-    <div class="flex-1">
-        <div class="relative">
-            <label for="kategori_id" class="block pl-10 py-2 text-white font-bold text-sm">Kategori</label>
-            <div class="pl-10 flex justify-start">
-                <input id="kategoriDropdownInput" type="text" class="px-4 w-full h-10 bg-white shadow-2xl rounded-xl border-2 border-[#756AB6] form-control" name="kategori_id" aria-describedby="kategoriHelp" required placeholder="Pilih Kategori" readonly>
-            </div>
-            <div id="kategoriDropdownMenu" class="hidden absolute left-0 right-0 mt-1 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                <ul class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="kategoriDropdownInput">
-                    <?php foreach ($kategori as $row) : ?>
-                        <li><button type="button" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><?php echo $row["kategori"]; ?></button></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        </div>
+<body class="bg-gray-100 p-4">
+  <div class="container mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Responsive Table</h1>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 border">Header 1</th>
+            <th class="px-4 py-2 border">Header 2</th>
+            <th class="px-4 py-2 border">Header 3</th>
+            <th class="px-4 py-2 border">Header 4</th>
+            <th class="px-4 py-2 border">Header 5</th>
+            <!-- Tambahkan lebih banyak header jika diperlukan -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="px-4 py-2 border">Content 1</td>
+            <td class="px-4 py-2 border">Content 2</td>
+            <td class="px-4 py-2 border">Content 3</td>
+            <td class="px-4 py-2 border">Content 4</td>
+            <td class="px-4 py-2 border">Content 5</td>
+            <!-- Tambahkan lebih banyak konten jika diperlukan -->
+          </tr>
+          <tr>
+            <td class="px-4 py-2 border">Content 1</td>
+            <td class="px-4 py-2 border">Content 2</td>
+            <td class="px-4 py-2 border">Content 3</td>
+            <td class="px-4 py-2 border">Content 4</td>
+            <td class="px-4 py-2 border">Content 5</td>
+            <!-- Tambahkan lebih banyak konten jika diperlukan -->
+          </tr>
+          <!-- Tambahkan lebih banyak baris jika diperlukan -->
+        </tbody>
+      </table>
     </div>
-
-    <!-- <script>
-    // JavaScript untuk menangani pembukaan dan penutupan dropdown
-    document.getElementById('kategoriDropdownInput').addEventListener('click', function() {
-        var dropdownMenu = document.getElementById('kategoriDropdownMenu');
-        dropdownMenu.classList.toggle('hidden');
-    });
-
-    // Menyembunyikan dropdown jika klik di luar dropdown
-    document.addEventListener('click', function(event) {
-        var dropdownMenu = document.getElementById('kategoriDropdownMenu');
-        var input = document.getElementById('kategoriDropdownInput');
-        if (!input.contains(event.target) && !dropdownMenu.contains(event.target)) {
-            dropdownMenu.classList.add('hidden');
-        }
-    });
-</script> -->
-
-    <script src="../script.js"></script>
-
+  </div>
 </body>
+</html>

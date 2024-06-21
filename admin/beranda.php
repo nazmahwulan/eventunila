@@ -1,9 +1,14 @@
 <?php
 include '../function.php';
+session_start(); // Mulai sesi
 
 $activeEvents = countActiveEvents();
+$pendingEvents = countPendingEvents();
+$rejectedEvents = countRejectedEvents();
 $categories = countCategories();
 $users = countUsers();
+$admin = countAdmin();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,10 +22,15 @@ $users = countUsers();
 </head>
 
 <body>
-    <div class="flex p-5 gap-4 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0]">
-        <div class="bg-white shadow-xl w-1/5 h-full rounded-xl">
-            <a class="text-[#AC87C5] font-bold text-4xl py-6 flex justify-center" href="index.php">EventUnila</a>
-            <nav class=" w-full flex flex-col ">
+    <div class="lg:flex bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] w-full md:h-screen lg:h-full py-6 lg:pt-5 lg:pb-5 lg:pl-5 lg:pr-[20px]">
+        <div class="flex justify-between mx-10 pb-6 lg:mx-0 lg:pb-0">
+            <a class="text-white font-bold text-2xl lg:hidden" href="index.php">EventUnila</a>
+            <button id="dropdownButton">
+                <i id="dropdownIcon" class="ti ti-user-circle text-white text-3xl lg:hidden"></i>
+            </button>
+        </div>
+        <div id="navbarDropdownMenu" class="lg:hidden hidden absolute w-8/12 md:w-4/12 left-[60px] md:left-[470px] top-[85px] bg-white rounded-xl mx-10">
+            <nav class=" w-full flex flex-col">
                 <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/beranda.php">
                     <i class="ti ti-dashboard ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Beranda</span>
                 </a>
@@ -33,81 +43,108 @@ $users = countUsers();
                 <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="logout.php">
+                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?id=<?php echo $_SESSION["users_id"]; ?>">
+                    <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
+                </a>
+                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
+                    <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="bg-white shadow-xl lg:w-1/5 lg:h-full rounded-xl hidden lg:flex flex-col lg:mr-4">
+            <a class="text-[#AC87C5] font-bold text-4xl py-6 flex justify-center" href="index.php">EventUnila</a>
+            <nav class=" w-full flex flex-col ">
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/beranda.php">
+                    <i class="ti ti-dashboard ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Beranda</span>
+                </a>
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/event/index.php">
+                    <i class="ti ti-calendar-event  ps-2 text-2xl group-hover:text-white group-active:text-white"></i> <span class="group-hover:text-white group-active:text-white">Event</span>
+                </a>
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/kategori/index.php">
+                    <i class="ti ti-category ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Kategori</span>
+                </a>
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
+                    <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
+                </a>
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?id=<?php echo $_SESSION["users_id"]; ?>">
+                    <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
+                </a>
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
                     <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
                 </a>
             </nav>
 
             <div class="px-12 mt-40 mb-10">
                 <hr class="border-[#AC87C5] border-1 mb-8">
-                <i class="ti ti-user-circle ps-2  text-[#AC87C5] text-4xl"></i>
-                <p class="text-[#AC87C5] text-base font-bold mt-2">Nazmah Wulan</p>
+                <i class="ti ti-user-circle ps-2 text-[#AC87C5] text-4xl"></i>
+                <p class="text-[#AC87C5] text-base font-bold mt-2"><?= ucwords(strtolower($_SESSION['nama'])) ?></p>
             </div>
         </div>
 
         <div class="">
-            <h1 class="text-white font-bold text-4xl py-6 ">Beranda</h1>
-            <div class="flex justify-center">
-                <hr class="border-white border-1 w-[1050px]">
+            <div class="flex justify-center lg:hidden">
+                <hr class="border-white border-1 w-full md:w-[1050px]">
             </div>
-            <div class="flex mt-10 gap-3 mb-10">
-                <div class="bg-white rounded-xl shadow-xl w-72 h-32 ml-6 ">
-                    <div class="flex gap-6 justify-center">
-                        <i class="ti ti-calendar-event mt-7 ml-[-15px] text-6xl text-[#AC87C5]"></i>
-                        <h1 class="text-[#AC87C5] text-lg font-bold mt-6">Jumlah Event
-                            <p class="flex justify-center text-4xl"><?php echo $activeEvents; ?></p>
-                        </h1>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl shadow-xl w-72 h-32 ml-6 ">
-                    <div class="flex gap-6 justify-center">
-                        <i class="ti ti-category mt-7 ml-[-15px] text-6xl text-[#AC87C5] "></i><span>
-                            <h1 class="text-[#AC87C5] text-lg font-bold mt-6">Jumlah Kategori
-                                <p class="flex justify-center text-4xl"><?php echo $categories; ?></p>
-                            </h1>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl shadow-xl w-72 h-32 ml-6 ">
-                    <div class="flex gap-6 justify-center">
-                        <i class="ti ti-users mt-7 ml-[-15px] text-6xl text-[#AC87C5] "></i><span>
-                            <h1 class="text-[#AC87C5] text-lg font-bold mt-6">Jumlah Pengguna
-                                <p class="flex justify-center text-4xl"><?php echo $users; ?></p>
-                            </h1>
-                    </div>
-                </div>
+            <h1 class="text-white font-bold text-2xl text-center my-10 lg:hidden">Beranda</h1>
+            <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5 ">Beranda</h1>
+            <div class="hidden lg:flex justify-center">
+                <hr class="border-white border-1 w-[985px]">
             </div>
-            <div class="flex mt-10 gap-3 mb-10">
-                <div class="bg-white rounded-xl shadow-xl w-72 h-32 ml-6 ">
-                    <div class="flex gap-6 justify-center">
-                        <i class="ti ti-calendar-event mt-7 ml-[-15px] text-6xl text-[#AC87C5]"></i>
-                        <h1 class="text-[#AC87C5] text-lg font-bold mt-6">Jumlah Event
-                            <p class="flex justify-center text-4xl">10</p>
-                        </h1>
+
+            <div class="flex items-center justify-center lg:mt-10">
+                <div class="mx-10 grid gap-6  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-10">
+                    <div class="flex flex-col items-center justify-center bg-white text-[#AC87C5] py-6 px-10 shadow-lg rounded-xl w-[300px]">
+                        <i class="ti ti-calendar-event text-6xl mb-4"></i>
+                        <h2 class="text-3xl font-bold"><?= $activeEvents ?></h2>
+                        <p class="text-lg font-semibold">Event Aktif</p>
                     </div>
-                </div>
-                <div class="bg-white rounded-xl shadow-xl w-72 h-32 ml-6 ">
-                    <div class="flex gap-6 justify-center">
-                        <i class="ti ti-category mt-7 ml-[-15px] text-6xl text-[#AC87C5] "></i><span>
-                            <h1 class="text-[#AC87C5] text-lg font-bold mt-6">Jumlah Kategori
-                                <p class="flex justify-center text-4xl">10</p>
-                            </h1>
+                    <div class="flex flex-col items-center justify-center bg-white text-[#AC87C5] py-6 px-10 shadow-lg rounded-xl w-[300px]">
+                        <i class="ti ti-calendar-event text-6xl mb-4"></i>
+                        <h2 class="text-3xl font-bold"><?= $pendingEvents ?></h2>
+                        <p class="text-lg font-semibold">Event Pending</p>
                     </div>
-                </div>
-                <div class="bg-white rounded-xl shadow-xl w-72 h-32 ml-6 ">
-                    <div class="flex gap-6 justify-center">
-                        <i class="ti ti-category mt-7 ml-[-15px] text-6xl text-[#AC87C5] "></i><span>
-                            <h1 class="text-[#AC87C5] text-lg font-bold mt-6">Jumlah Kategori
-                                <p class="flex justify-center text-4xl">10</p>
-                            </h1>
+                    <div class="flex flex-col items-center justify-center bg-white text-[#AC87C5] py-6 px-10 shadow-lg rounded-xl w-[300px]">
+                        <i class="ti ti-calendar-off text-6xl mb-4"></i>
+                        <h2 class="text-3xl font-bold"><?= $rejectedEvents ?></h2>
+                        <p class="text-lg font-semibold">Event Ditolak</p>
+                    </div>
+                    <div class="flex flex-col items-center justify-center bg-white text-[#AC87C5] py-6 px-10 shadow-lg rounded-xl w-[300px]">
+                        <i class="ti ti-list text-6xl mb-4"></i>
+                        <h2 class="text-3xl font-bold"><?= $categories ?></h2>
+                        <p class="text-lg font-semibold">Kategori</p>
+                    </div>
+                    <div class="flex flex-col items-center justify-center bg-white text-[#AC87C5] py-6 px-10 shadow-lg rounded-xl w-[300px]">
+                        <i class="ti ti-user text-6xl mb-4"></i>
+                        <h2 class="text-3xl font-bold"><?= $users ?></h2>
+                        <p class="text-lg font-semibold">Pengguna</p>
+                    </div>
+                    <div class="flex flex-col items-center justify-center bg-white text-[#AC87C5] py-6 px-10 shadow-lg rounded-xl w-[300px]">
+                        <i class="ti ti-shield-check text-6xl mb-4"></i>
+                        <h2 class="text-3xl font-bold"><?= $admin ?></h2>
+                        <p class="text-lg font-semibold">Admin</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="../script.js"></script>
 
+    <!-- <script>
+        const dropdownButton = document.getElementById("dropdownButton");
+        const navbarDropdownMenu = document.getElementById("navbarDropdownMenu");
+        if (dropdownButton && navbarDropdownMenu) {
+            dropdownButton.addEventListener("click", function() {
+                navbarDropdownMenu.classList.toggle("hidden");
+            });
 
+            document.addEventListener("click", function(event) {
+                if (!dropdownButton.contains(event.target) && !navbarDropdownMenu.contains(event.target)) {
+                    navbarDropdownMenu.classList.add("hidden");
+                }
+            });
+        }
+    </script> -->
 </body>
 
 </html>

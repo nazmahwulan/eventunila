@@ -25,10 +25,10 @@ $time = date_create($event['waktu']);
 </head>
 
 <body>
-    <div class="flex flex-wrap list-none my-4 px-32 mt-20">
+    <div class="flex flex-wrap list-none mx-14 my-5 lg:mt-10 lg:mx-32">
         <div class="flex hover:text-[#756AB6] font-semibold">
             <a href="index.php">
-                <i class="ti ti-home-filled pr-2"></i>Beranda</a>
+                <i class="ti ti-home-filled pr-2"></i>Home</a>
         </div>
         <span class="mx-2">/</span>
         <div class="flex hover:text-[#756AB6] font-semibold">
@@ -39,16 +39,16 @@ $time = date_create($event['waktu']);
     </div>
 
     <div class="flex flex-col">
-        <img class="mx-auto shadow-2xl rounded-2xl w-10/12 h-[500px]" src="img/<?php echo $event["gambar"]; ?>" alt="">
-        <h1 class="px-28 py-16 text-3xl font-bold text-[#AC87C5]"><?php echo $event["judul"]; ?></h1>
-        <div class="flex px-28 gap-8">
-            <div class="flex-1 h-auto w-11/12 mx-auto">
-                <div class="col-span-2 shadow-2xl rounded-2xl border-2 border-[#AC87C5] ">
+        <img class="mx-auto rounded-2xl lg:w-10/12 md:w-[740px] md:h-[500px] w-[330px] h-52" src="img/<?php echo $event["gambar"]; ?>" alt="">
+        <h1 class=" mx-10 lg:mx-28 md:mx-14 my-10 lg:my-16 text-2xl md:text-3xl font-bold text-[#AC87C5]"><?php echo $event["judul"]; ?></h1>
+        <div class="lg:flex mx-10 lg:mx-28 lg:gap-8">
+            <div class="flex-1 h-auto w-[330px] md:w-[740px] lg:w-11/12 mx-auto mb-10">
+                <div class="col-span-2 rounded-2xl border-2 border-[#AC87C5] ">
                     <h1 class="text-black text-base text-justify px-8 py-4"><?php echo $event["deskripsi"]; ?></h1>
                 </div>
             </div>
-            <div class="h-auto">
-                <div class="shadow-2xl rounded-2xl border-2 border-[#AC87C5]">
+            <div class="h-auto md:w-[350px]">
+                <div class="rounded-2xl border-2 border-[#AC87C5]">
                     <div class="px-6 py-4">
                         <h1 class="text-2xl font-bold text-gray-500 py-6">Detail Event</h1>
                         <hr class="border-gray-500 border-1 w-[300px] ">
@@ -77,35 +77,33 @@ $time = date_create($event['waktu']);
             </div>
         </div>
     </div>
-
-
-
-    <div class="flex items-center px-28 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] mt-[100px] h-[200px]">
-        <div class="flex-1 ">
-            <div class="text-white font-bold text-4xl">EventUnila</div>
-            <div class="text-gray-500 font-bold text-sm mt-4">Kumpulan Pengalaman, <br> Ayo bergabung bersama di EventUnila!</div>
-            <div class="flex gap-4 text-white font-bold text-sm mt-4">
-                <a href="about.php">Tentang Kami </a>
-                <a href="kontak.php">Kontak</a>
-                <a href="kebijakan.php">Kebijakan Pribadi</a>
+    
+    <div class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] mt-20 md:mt-40 py-16 px-10 lg:px-28">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div class="mb-6 md:mb-0">
+                <p class="text-white font-bold text-2xl md:text-4xl">EventUnila</p>
+                <p class="text-gray-500 font-bold text-sm mt-4">Kumpulan Pengalaman, <br> Ayo bergabung bersama di EventUnila!</p>
+                <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
+                    <a href="about.php">Tentang Kami</a>
+                    <a href="kontak.php">Kontak</a>
+                    <a href="kebijakan.php">Kebijakan Pribadi</a>
+                </div>
             </div>
-        </div>
-        <div class="flex-1 ml-[400px]">
-            <div class=" flex text-white font-bold text-sm">Jl. Prof. Sumantri Brojonegoro No.1 Gedong Meneng, <br>
-                Bandar Lampung.</div>
-            <div class="flex text-white text-2xl gap-10 mt-4">
-                <a href="https://web.facebook.com/OfficialUnila/?_rdc=1&_rdr"><i class="fab fa-facebook-f "></i></a>
-                <a href="https://twitter.com/official_unila"><i class="fab fa-twitter "></i></a>
-                <a href="https://www.instagram.com/official_unila"><i class="fab fa-instagram "></i></a>
-                <a href="https://www.tiktok.com/@official_unila"><i class="fab fa-tiktok "></i></a>
-                <a href="https://www.youtube.com/c/OfficialUnila"><i class="fab fa-youtube "></i></a>
-            </div>
-            <div class="text-white font-bold text-sm mt-4">
-                <p>copyright EventUnila © 2024 all rights reserved</p>
+            <div class="text-white font-bold text-sm">
+                <p>Jl. Prof. Sumantri Brojonegoro No.1 Gedong Meneng, <br>Bandar Lampung.</p>
+                <div class="flex gap-5 md:gap-10 text-white text-2xl mt-4">
+                    <a href="https://web.facebook.com/OfficialUnila/?_rdc=1&_rdr"><i class="ti ti-brand-facebook"></i></a>
+                    <a href="https://twitter.com/official_unila"><i class="ti ti-brand-twitter"></i></a>
+                    <a href="https://www.instagram.com/official_unila"><i class="ti ti-brand-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@official_unila"><i class="ti ti-brand-tiktok"></i></a>
+                    <a href="https://www.youtube.com/c/OfficialUnila"><i class="ti ti-brand-youtube"></i></a>
+                </div>
+                <div class="mt-6">
+                    <p>&copy; 2024 EventUnila. All rights reserved.</p>
+                </div>
             </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 
