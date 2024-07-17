@@ -1,20 +1,37 @@
 <?php
-// koneksi dengan database
+// Koneksi dengan database
 include '../../function.php';
 session_start();
 
-// ambil data di URL
-if (isset($_GET["id"])) {
-    $id = $_GET["id"];
-    // query data mahasiswa berdasarkan id
-    $kategori = query("SELECT * FROM kategori WHERE id=$id")[0];
-} else {
-    // jika tidak ada id, redirect ke halaman lain atau tampilkan pesan error
-    header('Location: /event/admin/kategori/index.php');
+// Periksa apakah peran pengguna adalah admin
+if ($_SESSION['user_role'] !== 'admin') {
+    // Jika tidak, arahkan ke halaman lain atau tampilkan pesan error
+    header('Location:../../index.php');
     exit;
 }
 
-// cek apakah tombol submit sudah ditekan apa belum
+// Ambil data di URL
+if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
+    $id = intval($_GET["id"]);
+    // Query data kategori berdasarkan ID
+    $kategori = query("SELECT * FROM kategori WHERE id = $id");
+
+    // Periksa apakah kategori ditemukan
+    if (count($kategori) === 0) {
+        // Jika tidak ditemukan, sertakan halaman error
+        include '../../error.php';
+        exit;
+    } else {
+        // Ambil data kategori jika ada
+        $kategori = $kategori[0];
+    }
+} else {
+    // Jika tidak ada ID atau ID tidak valid, sertakan halaman error
+    include '../../error.php';
+    exit;
+}
+
+// Cek apakah tombol submit sudah ditekan apa belum
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (ubah($_POST) > 0) {
         // Set flashdata untuk sukses
@@ -75,10 +92,10 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                 <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php">
-                    <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
+                <a class="nav-link gap-3 py-2.5 px-10 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/index.php">
+                    <i class="ti ti-arrows-exchange ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class=" group-hover:text-white group-active:text-white">Dahsboard Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
+                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../../logout.php">
                     <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
                 </a>
             </nav>
@@ -99,10 +116,10 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                 <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?">
-                    <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
+                <a class="nav-link gap-3 py-2.5 px-12 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/index.php">
+                    <i class="ti ti-arrows-exchange ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class=" group-hover:text-white group-active:text-white">Dahsboard Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../../logout.php">
                     <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
                 </a>
             </nav>
@@ -115,22 +132,31 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
         </div>
 
         <div class="">
-        <div class="flex justify-center lg:hidden">
+            <div class="flex justify-center lg:hidden">
                 <hr class="border-white border-1 w-full md:w-[1050px]">
             </div>
-            <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Kategori</h1>
+            <div class="flex justify-center lg:justify-start lg:gap-[200px]">
+                <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Kategori</h1>
+                <?php if ($flash) : ?>
+                    <div id="flash-message" class="flex justify-center items-center my-4">
+                        <div class="flex items-center px-4 py-2 rounded-xl bg-white text-black font-semibold shadow-2xl">
+                            <?php if ($flash['type'] == 'success') : ?>
+                                <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
+                            <?php elseif ($flash['type'] == 'error') : ?>
+                                <i class="ti ti-circle-x-filled text-2xl text-[#FF0000] mr-2"></i>
+                            <?php endif; ?>
+                            <div class="text-center">
+                                <?php echo $flash['message']; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
             <div class="hidden lg:flex justify-center">
                 <hr class="border-white border-1 w-[1000px]">
             </div>
             <h2 class="text-white font-bold text-2xl lg:text-4xl flex justify-center my-6">Ubah Kategori</h2>
 
-            <?php if ($flash) : ?>
-                <div id="flash-message" class="flex-1">
-                    <div class="px-4 py-2 rounded-xl text-white <?php echo ($flash['type'] == 'success') ? 'bg-green-500' : ($flash['type'] == 'error' ? 'bg-red-500' : ($flash['type'] == 'warning' ? 'bg-yellow-500' : 'bg-blue-500')); ?>">
-                        <?php echo $flash['message']; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
             <div class="flex justify-center">
                 <div class="bg-white rounded-xl shadow-xl w-[1000px] h-3/5 mx-10 lg:mx-5 p-6 ">
                     <form action="" method="post">
@@ -151,6 +177,36 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
     </div>
 
     <script src="../../script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Ambil path URL halaman saat ini
+            let currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            console.log("Current Path:", currentPath);
+
+            // Jika currentPath mengandung 'ubah.php', ubah menjadi path yang sesuai dengan index.php
+            if (currentPath.includes('ubah.php')) {
+                currentPath = '/event/admin/kategori/index.php';
+            }
+
+            navLinks.forEach(link => {
+                // Ambil path dari URL tautan
+                const linkPath = new URL(link.href).pathname;
+                console.log("Link Path:", linkPath);
+
+                // Periksa apakah currentPath cocok dengan linkPath
+                if (currentPath === linkPath) {
+                    console.log("Active link found:", link.href);
+                    // Tambahkan kelas aktif jika path sesuai
+                    link.classList.add('bg-gradient-to-b', 'from-[#AC87C5]', 'via-[#E0AED0]', 'to-[#FFE5E5]', 'w-11/12', 'rounded-r-full', 'text-white');
+                } else {
+                    // Hapus kelas aktif jika path tidak sesuai
+                    link.classList.remove('w-11/12', 'rounded-r-full', 'text-white');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -4,18 +4,26 @@ include 'navbar.php';
 
 //pagination
 $jumlahDataPerHalaman = 6;
-$events = query("SELECT * FROM events");
-$jumlahData = count($events);
-$jumlahHalaman = ceil($jumlahData / $jumlahDataPerHalaman);
-$halamanAktif = (isset($_GET["halaman"])) ? $_GET["halaman"] : 1;
-$awalData = ($jumlahDataPerHalaman * $halamanAktif) - $jumlahDataPerHalaman;
 
-$event = query("SELECT * FROM events WHERE events.status ='disetujui' ORDER BY id LIMIT $awalData, $jumlahDataPerHalaman");
+// Mendapatkan halaman aktif dari parameter URL
+$halamanAktif = (isset($_GET["halaman"])) ? $_GET["halaman"] : 1;
 
 // Mendapatkan kata kunci pencarian dari URL
-$searchKeyword = isset($_POST['keyword']) ? $_POST['keyword'] : '';
+$searchKeyword = isset($_POST['keyword']) ? $_POST['keyword'] : (isset($_GET['keyword']) ? $_GET['keyword'] : '');
 
+// Mendapatkan kategori dari URL
+$kategori_id = isset($_POST['kategori']) ? $_POST['kategori'] : (isset($_GET['kategori']) ? $_GET['kategori'] : '');
+
+// Mendapatkan total data yang sesuai dengan filter pencarian dan kategori
+$totalEvents = getEvents($kategori_id, $searchKeyword, $halamanAktif, $jumlahDataPerHalaman, true);
+
+// Menghitung jumlah halaman
+$jumlahHalaman = ceil($totalEvents / $jumlahDataPerHalaman);
+
+// Mendapatkan data event sesuai halaman aktif
+$events = getEvents($kategori_id, $searchKeyword, $halamanAktif, $jumlahDataPerHalaman);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,17 +41,17 @@ $searchKeyword = isset($_POST['keyword']) ? $_POST['keyword'] : '';
 </head>
 
 <body>
-    <div class=" mx-10 lg:mx-28  mt-[50px] lg:mt-[100px] flex justify-between">
+    <div class="mx-10 lg:mx-28  mt-[50px] lg:mt-[100px] flex justify-between">
         <h1 class="text-[#756AB6] font-bold text-2xl md:text-3xl text-justify md:hidden">Event <br> Mendatang</h1>
         <h1 class="text-[#756AB6] font-bold text-2xl md:text-3xl hidden md:block">Event Mendatang</h1>
-        <form action="halamanevent.php" method="post" class="my-5 md:mt-[-6px]">
+        <form action="halamanevent.php" method="get" class="my-5 md:mt-[-6px]">
             <div class="relative inline-block w-44">
                 <select name="kategori" class="block appearance-none w-full px-4 pr-8 h-10 bg-white border-2 border-[#756AB6] rounded-xl leading-tight focus:outline-none focus:bg-white focus:border-purple-500" onchange="this.form.submit()">
                     <option class="text-black font-bold text-sm" value="">Pilih Kategori</option>
                     <?php
                     $kategori = getkategori();
                     foreach ($kategori as $row) {
-                        $selected = isset($_POST['kategori']) && $_POST['kategori'] == $row['id'] ? 'selected' : '';
+                        $selected = (isset($_GET['kategori']) && $_GET['kategori'] == $row['id']) ? 'selected' : '';
                         echo "<option value='" . $row['id'] . "' $selected>" . $row['kategori'] . "</option>";
                     }
                     ?>
@@ -55,6 +63,7 @@ $searchKeyword = isset($_POST['keyword']) ? $_POST['keyword'] : '';
                 </div>
             </div>
         </form>
+
     </div>
 
     <div class="flex flex-wrap list-none mx-14  my-5 lg:mx-32 ">
@@ -69,8 +78,6 @@ $searchKeyword = isset($_POST['keyword']) ? $_POST['keyword'] : '';
     </div>
 
     <?php
-    $kategori_id = isset($_POST['kategori']) ? $_POST['kategori'] : '';
-    $events = getEvents($kategori_id, $searchKeyword);
     ?>
     <?php if ($searchKeyword && empty($events)) : ?>
         <div class="mx-auto px-28">
@@ -84,7 +91,7 @@ $searchKeyword = isset($_POST['keyword']) ? $_POST['keyword'] : '';
                 $time = date_create($row['waktu']);
                 ?>
                 <div class="rounded-xl border-2 border-[#AC87C5]">
-                    <a href="detailevent.php?id=<?php echo $row["id"]; ?>">
+                    <a href="detailevent.php?id=<?php echo $row["event_id"]; ?>">
                         <img class="rounded-t-xl w-full h-52" src="img/<?php echo $row["gambar"]; ?>">
                         <div class="mx-8 my-6">
                             <h4 class="truncate text-xl font-bold mb-2"><?php echo $row["judul"]; ?></h4>
@@ -98,7 +105,9 @@ $searchKeyword = isset($_POST['keyword']) ? $_POST['keyword'] : '';
                                     <p class="text-sm text-start"><?php echo date_format($time, "H:i"); ?> WIB</p>
                                 </div>
                             </div>
-                            <p class="truncate text-justify text-sm"><?php echo $row["deskripsi"]; ?></p>
+                            <div class="truncate text-justify text-sm">
+                                <?php echo htmlspecialchars_decode($row["deskripsi"]); ?>
+                            </div>
                         </div>
                         <hr class="border-[#AC87C5]">
                         <div class="text-base font-bold text-center px-10 py-2"><?php echo $row["penyelenggara"]; ?></div>
@@ -111,21 +120,22 @@ $searchKeyword = isset($_POST['keyword']) ? $_POST['keyword'] : '';
 
     <div class="flex justify-end my-5 mx-10 lg:mx-28 lg:my-10">
         <?php if ($halamanAktif > 1) : ?>
-            <a class="border border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $halamanAktif - 1; ?>">&laquo;</a>
+            <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $halamanAktif - 1; ?>&keyword=<?= urlencode($searchKeyword); ?>&kategori=<?= urlencode($kategori_id); ?>">&laquo;</a>
         <?php endif; ?>
 
         <?php for ($i = 1; $i <= $jumlahHalaman; $i++) : ?>
             <?php if ($i == $halamanAktif) : ?>
-                <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold text-white bg-gradient-to-r from-[#AC87C5] to-[#E0AED0]" href="?halaman=<?= $i; ?>"><?= $i; ?> </a>
+                <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold text-white bg-[#AC87C5]" href="?halaman=<?= $i; ?>&keyword=<?= urlencode($searchKeyword); ?>&kategori=<?= urlencode($kategori_id); ?>"><?= $i; ?></a>
             <?php else : ?>
-                <a class=" border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $i; ?>"><?= $i; ?> </a>
+                <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $i; ?>&keyword=<?= urlencode($searchKeyword); ?>&kategori=<?= urlencode($kategori_id); ?>"><?= $i; ?></a>
             <?php endif; ?>
         <?php endfor; ?>
 
         <?php if ($halamanAktif < $jumlahHalaman) : ?>
-            <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $halamanAktif + 1; ?>">&raquo;</a>
+            <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $halamanAktif + 1; ?>&keyword=<?= urlencode($searchKeyword); ?>&kategori=<?= urlencode($kategori_id); ?>">&raquo;</a>
         <?php endif; ?>
     </div>
+
 
     <div class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] mt-20 md:mt-40 py-16 px-10 lg:px-28">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center">

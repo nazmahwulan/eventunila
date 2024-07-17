@@ -45,10 +45,10 @@ ob_end_flush(); // Mengakhiri dan mengirim buffer output
                 <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?id=<?php echo $_SESSION["users_id"]; ?>">
+                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profileAdmin/index.php?id=<?php echo $_SESSION["users_id"]; ?>">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
                 </a>
-                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
+                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../../logout.php">
                     <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
                 </a>
             </nav>
@@ -69,10 +69,10 @@ ob_end_flush(); // Mengakhiri dan mengirim buffer output
                 <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?id=<?php echo $_SESSION["users_id"]; ?>">
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profileAdmin/index.php?id=<?php echo $_SESSION["users_id"]; ?>">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
                 </a>
-                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../../logout.php">
                     <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
                 </a>
             </nav>
@@ -88,7 +88,23 @@ ob_end_flush(); // Mengakhiri dan mengirim buffer output
             <div class="flex justify-center lg:hidden">
                 <hr class="border-white border-1 w-full md:w-[1050px]">
             </div>
-            <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Profile</h1>
+            <div class="flex justify-center lg:justify-start lg:gap-[250px]">
+                <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Profile</h1>
+                <?php if ($flash) : ?>
+                    <div id="flash-message" class="flex justify-center items-center my-4">
+                        <div class="flex items-center px-4 py-2 rounded-xl bg-white text-black font-semibold shadow-2xl">
+                            <?php if ($flash['type'] == 'success') : ?>
+                                <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
+                            <?php elseif ($flash['type'] == 'error') : ?>
+                                <i class="ti ti-circle-x-filled text-2xl text-[#FF0000] mr-2"></i>
+                            <?php endif; ?>
+                            <div class="text-center">
+                                <?php echo $flash['message']; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
             <div class="hidden lg:flex justify-center">
                 <hr class="border-white border-1 w-[1000px]">
             </div>
@@ -96,7 +112,7 @@ ob_end_flush(); // Mengakhiri dan mengirim buffer output
 
             <div class="bg-white lg:w-[1000px] shadow-xl rounded-xl p-6 mx-10 lg:mx-5 overflow-x-auto">
                 <div class="flex justify-end">
-                    <a href="editprofil.php?id=<?php echo $users["id"]; ?>" class="hover:text-[#AC87C5] hover:bg-none hover:border-2 hover:border-[#AC87C5] ti ti-edit bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-8 h-8 text-sm  text-white flex items-center justify-center"></a>
+                    <a href="editprofile.php?id=<?php echo $users["id"]; ?>" class="hover:text-[#AC87C5] hover:bg-none hover:border-2 hover:border-[#AC87C5] ti ti-edit bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-8 h-8 text-sm  text-white flex items-center justify-center"></a>
                 </div>
                 <input type="hidden" name="id" value="<?php echo $users["id"]; ?> ">
                 <div class="">
@@ -116,6 +132,19 @@ ob_end_flush(); // Mengakhiri dan mengirim buffer output
             </div>
         </div>
         <script src="../../script.js"></script>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Navbar active link
+            let currentUrl = window.location.href;
+            document.querySelectorAll('.nav-link').forEach(function(link) {
+                if (currentUrl === link.href) {
+                    link.classList.add('active');
+                    link.classList.add('text-white', 'w-11/12', 'rounded-r-full', 'bg-gradient-to-b', 'from-[#AC87C5]', 'via-[#E0AED0]', 'to-[#FFE5E5]');
+
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -1,7 +1,12 @@
 <?php
+ob_start(); // Memulai output buffering
 include 'navbar.php';
 include 'function.php';
-// session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("location:login.php");
+    exit;
+}
 
 $kategori = query("SELECT *FROM kategori");
 
@@ -22,12 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST["submit"])) {
         }
     }
     // Redirect ke halaman daftar event
-    header('Location: daftarevent.php');
+    header('Location:daftarevent.php');
     exit;
 }
 // // Cek apakah ada flashdata
 $flash = isset($_SESSION['flash']) ? $_SESSION['flash'] : null;
 unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
+ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
 
 ?>
 <!DOCTYPE html>
@@ -39,12 +45,29 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/2eb34c602e.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <style>
+        .ql-container {
+            height: 200px;
+            border: none !important;
+            /* Hilangkan border default Quill */
+        }
+
+        .ql-toolbar {
+            border: none !important;
+            /* Hilangkan border default Quill */
+        }
+
+        .ql-editor {
+            min-height: 200px;
+            /* Atur tinggi minimum sesuai kebutuhan */
+        }
+    </style>
 </head>
 
 <body>
-
     <div class="flex flex-wrap list-none mx-14 my-5 lg:mx-32 ">
         <div class="flex hover:text-[#756AB6] font-semibold">
             <a href="index.php">
@@ -55,19 +78,27 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
     </div>
 
     <?php if ($flash) : ?>
-        <div id="flash-message" class="w-full h-12 flex items-center justify-center my-8">
-            <div class="px-4 py-2 rounded-xl text-white <?php echo ($flash['type'] == 'success') ? 'bg-green-500' : ($flash['type'] == 'error' ? 'bg-red-500' : ($flash['type'] == 'warning' ? 'bg-yellow-500' : 'bg-blue-500')); ?>">
-                <?php echo $flash['message']; ?>
+        <div id="flash-message" class="flex justify-center items-center my-4">
+            <div class="flex items-center px-4 py-2 rounded-xl bg-white border-2 border-[#AC87C5]  text-black font-semibold">
+                <?php if ($flash['type'] == 'success') : ?>
+                    <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
+                <?php elseif ($flash['type'] == 'error') : ?>
+                    <i class="ti ti-circle-x-filled text-2xl text-[#FF0000] mr-2"></i>
+                <?php endif; ?>
+                <div class="text-center">
+                    <?php echo $flash['message']; ?>
+                </div>
             </div>
         </div>
-    <?php endif; ?> 
-    <form action="" method="post" enctype="multipart/form-data">
+    <?php endif; ?>
+
+    <form action="" method="post" enctype="multipart/form-data" id="eventForm">
         <div class="flex flex-col">
             <div class="mx-auto rounded-t-xl w-[340px] md:w-[740px] lg:w-[900px] h-[200px] md:h-[400px] border-2 border-[#AC87C5] overflow-hidden relative flex flex-col justify-center items-center">
                 <input type="file" name="gambar" id="gambar" class="hidden">
                 <label for="gambar" id="upload-label" class="flex flex-col items-center justify-center w-full h-full cursor-pointer text-center text-sm font-bold text-[#AC87C5] " required>
                     <i class="ti ti-circle-plus md:text-5xl text-3xl"></i>
-                    <span id="upload-text" class="mt-2 text-xs md:text-sm">Unggah gambar/poster/banner<br>Direkomendasikan 724 x 340px dan tidak lebih dari 2Mb</span>
+                    <span id="upload-text" class="mt-2 text-xs md:text-sm">Unggah gambar/poster/banner<br>Direkomendasikan 900 x 400px dan tidak lebih dari 2Mb</span>
                     <img id="box" src="" alt="Preview Gambar" class="w-full h-full object-cover hidden">
                 </label>
             </div>
@@ -81,7 +112,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                         <div class="relative">
                             <label for="kategori" class="block ml-4 md:ml-8 lg:ml-10 my-2 text-white font-bold text-sm">Kategori</label>
                             <div class="ml-4 md:ml-8 lg:ml-10 flex justify-start relative">
-                                <input id="kategoriDropdownInput" type="text" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="kategori" aria-describedby="kategoriHelp"  placeholder="Pilih Kategori" readonly required >
+                                <input id="kategoriDropdownInput" type="text" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="kategori" aria-describedby="kategoriHelp" placeholder="Pilih Kategori" readonly required>
                                 <div id="kategoriDropdownMenu" class="hidden absolute left-[70px] md:left-[160px] top-[50px] transform -translate-x-1/2 w-full max-w-xs rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                                     <ul class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="kategoriDropdownInput">
                                         <?php foreach ($kategori as $row) : ?>
@@ -95,7 +126,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                     <div class="flex-1">
                         <label for="lokasi" class="block mr-4 md:mr-8 lg:mr-10 my-2 text-white font-bold text-sm">Lokasi</label>
                         <div class="mr-4 md:mr-8 lg:mr-10 flex justify-start">
-                            <input type="text" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="lokasi" id="lokasi" aria-describedby="lokasiHelp"  placeholder="Pilih Lokasi" required>
+                            <input type="text" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="lokasi" id="lokasi" aria-describedby="lokasiHelp" placeholder="Pilih Lokasi" required>
                         </div>
                     </div>
                 </div>
@@ -109,7 +140,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                     <div class="flex-1">
                         <label for="waktu" class="block mr-4 md:mr-8 lg:mr-10 my-2 text-white font-bold text-sm">Waktu</label>
                         <div class="mr-4 md:mr-8 lg:mr-10 flex justify-start">
-                            <input type="time" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="waktu" id="waktu" aria-describedby="waktuHelp"  placeholder="Pilih Tanggal" required>
+                            <input type="time" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="waktu" id="waktu" aria-describedby="waktuHelp" placeholder="Pilih Tanggal" required>
                         </div>
                     </div>
                 </div>
@@ -121,10 +152,13 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                 <div class="flex justify-center">
                     <input type="text" class="px-4 w-11/12 h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="penyelenggara" id="penyelenggara" aria-describedby="penyelenggaraHelp" placeholder="Nama Penyelenggara" required>
                 </div>
-                <label for="deskripsi" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-white font-bold text-sm text">Deskripsi Event</label>
+                <label for="deskripsi" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-white font-bold text-sm">Deskripsi Event</label>
                 <div class="flex justify-center">
-                    <textarea type="text" class="text-justify px-4 py-4 w-11/12 h-60 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="deskripsi" id="deskripsi" aria-describedby="deskripsiHelp" required></textarea>
+                    <div class="rounded-xl w-11/12 h-64 bg-white rounded-xl border-2 border-[#756AB6]">
+                        <div class="text-xl" id="editor-container"></div>
+                    </div>
                 </div>
+                <input type="hidden" name="deskripsi" id="hidden-deskripsi">
                 <div class="mx-auto rounded-xl w-60 md:w-80 h-10 border-2 border-white my-6 md:mt-10 hover:bg-[#E0AED0]  text-center">
                     <button type="submit" name="submit" class=" text-white text-sm font-bold pt-[8px]">
                         Daftar
@@ -161,30 +195,66 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
         </div>
     </div>
 
-<script>
-    const dropdownInput = document.getElementById('kategoriDropdownInput');
-    const dropdownMenu = document.getElementById('kategoriDropdownMenu');
-    if (dropdownInput && dropdownMenu) {
-        const options = dropdownMenu.querySelectorAll('button');
+    <script>
+        const dropdownInput = document.getElementById('kategoriDropdownInput');
+        const dropdownMenu = document.getElementById('kategoriDropdownMenu');
+        if (dropdownInput && dropdownMenu) {
+            const options = dropdownMenu.querySelectorAll('button');
 
-        dropdownInput.addEventListener('click', () => {
-            dropdownMenu.classList.toggle('hidden');
-        });
-
-        options.forEach(option => {
-            option.addEventListener('click', (event) => {
-                dropdownInput.value = event.target.textContent;
-                dropdownMenu.classList.add('hidden');
+            dropdownInput.addEventListener('click', () => {
+                dropdownMenu.classList.toggle('hidden');
             });
-        });
 
-        document.addEventListener('click', (event) => {
-            if (!dropdownInput.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                dropdownMenu.classList.add('hidden');
-            }
+            options.forEach(option => {
+                option.addEventListener('click', (event) => {
+                    dropdownInput.value = event.target.textContent;
+                    dropdownMenu.classList.add('hidden');
+                });
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!dropdownInput.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            var quill = new Quill('#editor-container', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                    [{ 'header': [1, 2, false] }],
+                    ['bold', 'italic', 'underline'],
+                    ['link', 'image'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'font': [] }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    ['clean']
+                ]
+                }
+            });
+
+            document.getElementById('eventForm').onsubmit = function(event) {
+                var deskripsi = quill.root.innerHTML;
+
+                // // Hapus semua tag HTML di klien
+                // var tempElement = document.createElement("div");
+                // tempElement.innerHTML = deskripsi;
+                // deskripsi = tempElement.textContent || tempElement.innerText || "";
+
+                document.getElementById('hidden-deskripsi').value = deskripsi;
+                console.log("Deskripsi yang dikirim:", deskripsi);
+
+                if (deskripsi === '') {
+                    console.error("Deskripsi kosong!");
+                    event.preventDefault(); // Batalkan pengiriman form
+                }
+            };
         });
-    }
-</script>
+    </script>
     <script src="script.js"></script>
 </body>
 

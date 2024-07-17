@@ -1,17 +1,26 @@
 <?php
+ob_start(); // Memulai output buffering
 include 'function.php';
 include 'navbar.php';
-// session_start();
-// if (!isset($_SESSION["login"])) {
-//     header("location:login.php");
-//     exit;
-// }
-// if(!isset($_SESSION["login"]) && basename($_SERVER["SCRIPT_NAME"]) !== "login.php"){
-//     header("location:login.php");
-//     exit;
+
+// // Bersihkan sesi yang telah kadaluarsa
+// cleanExpiredSessions();
+
+// // $current_user = getSession();
+
+// // if (!$current_user) {
+// //     header("Location: login.php");
+// //     exit();
+// // }
+
+// if(isset($_GET['action']) && $_GET['action'] == 'logout') {
+//     deleteSession();
 // }
 
-$event = query("SELECT *FROM events WHERE events.status ='disetujui' ORDER BY id");
+// $current_user = getSession();
+
+$event = query("SELECT * FROM events WHERE events.status = 'disetujui' AND events.tanggal >= CURDATE() ORDER BY events.tanggal ASC LIMIT 6");
+ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
 
 ?>
 <!DOCTYPE html>
@@ -35,7 +44,7 @@ $event = query("SELECT *FROM events WHERE events.status ='disetujui' ORDER BY id
             </div>
             <div class="flex-1 mt-10 lg:mt-0">
                 <h1 class="text-white font-bold text-xl md:text-2xl lg:text-4xl text-center lg:text-left">
-                    Temukan event seru <br/>
+                    Temukan event seru <br />
                     untuk meningkatkan keterampilan <br />
                     dan pengetahuan kamu!<br />
                     <span class="text-gray-500 text-sm">Pilih dan ikuti beragam event seru dan menarik di Universitas Lampung</span>
@@ -82,7 +91,7 @@ $event = query("SELECT *FROM events WHERE events.status ='disetujui' ORDER BY id
             $time = date_create($row['waktu']);
             ?>
             <div class="rounded-xl border-2 border-[#AC87C5]">
-                <a href="detailevent.php?id=<?php echo $row["id"]; ?>">
+                <a href="detailevent.php?id=<?php echo $row["event_id"]; ?>">
                     <img class="rounded-t-xl w-full h-52 object-cover" src="img/<?php echo $row["gambar"]; ?>" alt="Event Image">
                     <div class="mx-8 my-6">
                         <h4 class="truncate text-xl font-bold mb-2"><?php echo $row["judul"]; ?></h4>
@@ -96,7 +105,9 @@ $event = query("SELECT *FROM events WHERE events.status ='disetujui' ORDER BY id
                                 <p class="text-sm text-start"><?php echo date_format($time, "H:i"); ?> WIB</p>
                             </div>
                         </div>
-                        <p class="truncate text-justify text-sm"><?php echo $row["deskripsi"]; ?></p>
+                        <div class="truncate text-justify text-sm">
+                            <?php echo htmlspecialchars_decode($row["deskripsi"]); ?>
+                        </div>
                     </div>
                     <hr class="border-[#AC87C5]">
                     <div class="text-base font-bold text-center px-10 py-2"><?php echo $row["penyelenggara"]; ?></div>
@@ -138,9 +149,9 @@ $event = query("SELECT *FROM events WHERE events.status ='disetujui' ORDER BY id
                 <p class="text-white font-bold text-2xl md:text-4xl">EventUnila</p>
                 <p class="text-gray-500 font-bold text-sm mt-4">Kumpulan Pengalaman, <br> Ayo bergabung bersama di EventUnila!</p>
                 <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
-                    <a href="about.php">Tentang Kami</a>
-                    <a href="kontak.php">Kontak</a>
-                    <a href="kebijakan.php">Kebijakan Pribadi</a>
+                    <a href="">Tentang Kami</a>
+                    <a href="">Kontak</a>
+                    <a href="">Kebijakan Pribadi</a>
                 </div>
             </div>
             <div class="text-white font-bold text-sm">
@@ -158,6 +169,7 @@ $event = query("SELECT *FROM events WHERE events.status ='disetujui' ORDER BY id
             </div>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 

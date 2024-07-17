@@ -1,0 +1,17 @@
+RewriteEngine On
+RewriteBase /event/
+
+# Debugging - ini dapat dihapus setelah verifikasi
+RewriteRule ^.*$ - [E=MYVAR:works]
+Header set X-Debug-MyVar "%{MYVAR}e"
+
+# Redirect semua permintaan yang tidak valid ke 404 error page
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /event/error.php [L]
+
+# Handle custom 404 errors
+ErrorDocument 404 /event/error.php
+
+
+

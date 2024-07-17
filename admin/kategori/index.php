@@ -1,10 +1,56 @@
 <?php
 include '../../function.php';
-$kategori = query("SELECT *FROM kategori");
 session_start();
+
+// Periksa apakah peran pengguna adalah admin
+if ($_SESSION['user_role'] !== 'admin') {
+    // Jika tidak, arahkan ke halaman lain atau tampilkan pesan error
+    header('Location:../../index.php');
+    exit;
+}
+
+//pagination
+$jumlahDataPerHalaman = 2;
+$halamanAktif = (isset($_GET["halaman"])) ? $_GET["halaman"] : 1;
+$awalData = ($jumlahDataPerHalaman * $halamanAktif) - $jumlahDataPerHalaman;
+
+// Keyword pencarian
+$keyword = '';
+if (isset($_POST["cari"])) {
+    $keyword = $_POST["keyword"];
+} elseif (isset($_GET["keyword"])) {
+    $keyword = $_GET["keyword"];
+}
+
+// Query dasar
+$queryBase = "SELECT *FROM kategori ";
+
+// Tambahkan kondisi pencarian jika ada keyword
+$querySearch = "";
+if (!empty($keyword)) {
+    $querySearch = " WHERE (kategori.kategori LIKE '%$keyword%')";
+}
+
+// Hitung total data
+$queryCount = $queryBase . $querySearch;
+$kategoris = query($queryCount);
+$jumlahData = count($kategoris);
+$jumlahHalaman = ceil($jumlahData / $jumlahDataPerHalaman);
+
+// Query dengan LIMIT untuk pagination
+$query = $queryBase . $querySearch . " ORDER BY kategori.created_at DESC LIMIT $awalData, $jumlahDataPerHalaman";
+$kategori = query($query);
+
 // Cek apakah ada flashdata
 $flash = isset($_SESSION['flash']) ? $_SESSION['flash'] : null;
 unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
+
+// $kategori = query("SELECT *FROM kategori ORDER BY 
+//         kategori.created_at DESC");
+
+// // Cek apakah ada flashdata
+// $flash = isset($_SESSION['flash']) ? $_SESSION['flash'] : null;
+// unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
 ?>
 
 <!DOCTYPE html>
@@ -40,10 +86,10 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                 <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?id=<?php echo $_SESSION["users_id"]; ?>">
-                    <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
+                <a class="nav-link gap-3 py-2.5 px-10 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/index.php">
+                    <i class="ti ti-arrows-exchange ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class=" group-hover:text-white group-active:text-white">Dahsboard Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
+                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../../logout.php">
                     <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
                 </a>
             </nav>
@@ -64,10 +110,10 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                 <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?id=<?php echo $_SESSION["users_id"]; ?>">
-                    <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
+                <a class="nav-link gap-3 py-2.5 px-12 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/index.php">
+                    <i class="ti ti-arrows-exchange ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class=" group-hover:text-white group-active:text-white">Dahsboard Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../../logout.php">
                     <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
                 </a>
             </nav>
@@ -80,49 +126,52 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
         </div>
 
         <div class="">
-        <div class="flex justify-center lg:hidden">
+            <div class="flex justify-center lg:hidden">
                 <hr class="border-white border-1 w-full md:w-[1050px]">
             </div>
-            <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Kategori</h1>
+            <div class="flex justify-center lg:justify-start lg:gap-[190px]">
+                <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Kategori</h1>
+                <?php if ($flash) : ?>
+                    <div id="flash-message" class="flex justify-center items-center my-4">
+                        <div class="flex items-center px-4 py-2 rounded-xl bg-white text-black font-semibold shadow-2xl">
+                            <?php if ($flash['type'] == 'success') : ?>
+                                <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
+                            <?php elseif ($flash['type'] == 'error') : ?>
+                                <i class="ti ti-circle-x-filled text-2xl text-[#FF0000] mr-2"></i>
+                            <?php endif; ?>
+                            <div class="text-center">
+                                <?php echo $flash['message']; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
             <div class="hidden lg:flex justify-center">
                 <hr class="border-white border-1 w-[1000px]">
             </div>
             <h2 class="text-white font-bold text-2xl lg:text-4xl flex justify-center my-6">Daftar Kategori</h2>
 
-            <!-- <div class="flex flex-wrap text-white list-none mx-14 my-5 lg:mx-10 ">
-                <div class="flex font-semibold">
-                    <a href="../beranda.php">
-                        <i class="ti ti-home-filled pr-2"></i>Beranda</a>
-                </div>
-                <span class="mx-2">/</span>
-                <a href="../kategori/index.php">
-                    <li class="text-white font-semibold">Kategori</li>
-                </a>
-            </div> -->
-
             <div class="bg-white lg:w-[1000px] shadow-xl rounded-xl p-6 mx-10 lg:mx-5 overflow-x-auto">
-                <div class="flex justify-end gap-2 mb-5 w-[300px] md:w-[680px] lg:w-[950px]">
-                    <?php if ($flash) : ?>
-                        <div id="flash-message" class="flex-1">
-                            <div class="px-4 py-2 rounded-xl text-white <?php echo ($flash['type'] == 'success') ? 'bg-green-500' : ($flash['type'] == 'error' ? 'bg-red-500' : ($flash['type'] == 'warning' ? 'bg-yellow-500' : 'bg-blue-500')); ?>">
-                                <?php echo $flash['message']; ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
+            <div class="flex justify-end gap-4 mb-5 w-[400px] md:w-[700px] lg:w-[950px]">
+                    <form action="" method="POST" class="flex items-center">
+                        <input type="text" class="block px-4 w-40 h-10 bg-white rounded-l-xl border-2 border-[#AC87C5]" name="keyword" placeholder="Cari Kategori" autocomplete="off" value="<?php echo isset($_POST['keyword']) ? htmlspecialchars($_POST['keyword']) : ''; ?>">
+                        <button type="submit" name="cari" class="ti ti-search text-white px-2 w-10 h-10 rounded-r-xl bg-[#AC87C5]">
+                        </button>
+                    </form>
                     <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-44 h-10 hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
                         <div class="text-center pt-[6px]">
-                            <a class="text-white gap-2 text-base flex justify-center font-bold group-hover:text-[#AC87C5] " href="tambah.php">
+                            <a class="text-white gap-2 text-base flex justify-center font-bold group-hover:text-[#AC87C5]" href="tambah.php">
                                 <i class="ti ti-plus text-xl font-bold "></i><span>Tambah Kategori</span>
                             </a>
                         </div>
                     </div>
                 </div>
-                <table class="min-w-full divide-y divide-gray-200 w-full">
+                <table class="min-w-full divide-y divide-gray-200 w-[400px] md:lg:w-full">
                     <thead>
                         <tr>
                             <th scope="col" class="px-4 py-3 text-left text-xs font-sm font-bold uppercase tracking-wider">#</th>
                             <th scope="col" class="px-4 py-3 text-left text-xs font-sm font-bold uppercase tracking-wider">Kategori</th>
-                            <th scope="col" class="px-4 py-3 text-left text-xs font-sm font-bold uppercase tracking-wider">Aksi</th>
+                            <th scope="col" class="pl-32 md:px-8 py-3 text-left text-xs font-sm font-bold uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -133,17 +182,17 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                                 </td>
                             </tr>
                         <?php else : ?>
-                            <?php $i = 1; ?>
+                            <?php $i  = $awalData + 1; ?>
                             <?php foreach ($kategori as $row) : ?>
                                 <tr>
                                     <td class="px-4 py-2 whitespace-nowrap text-sm leading-tight"><?php echo $i; ?></td>
                                     <td class="px-4 py-2 whitespace-normal text-sm leading-tight"><?php echo $row["kategori"]; ?></td>
 
 
-                                    <td class="px-4 py-2 whitespace-nowrap text-sm leading-tight">
+                                    <td class="pl-28 md:px-4 py-2 whitespace-nowrap text-sm leading-tight">
                                         <div class="flex gap-2">
                                             <a href="ubah.php?id=<?php echo $row["id"]; ?>" class=" ti ti-edit bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-8 h-8 text-sm  text-white flex items-center justify-center hover:bg-none hover:border-2 hover:border-[#AC87C5] hover:text-[#AC87C5]"></a>
-                                            <a href="hapus.php?id=<?php echo $row["id"]; ?>" onclick="return confirm('yakin?');" class="ti ti-trash bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-8 h-8 text-sm text-white flex items-center justify-center hover:bg-none hover:border-2 hover:border-[#AC87C5] hover:text-[#AC87C5]"></a>
+                                            <a onclick="openDeleteModal(<?= $row['id'] ?>)" class="ti ti-trash bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-8 h-8 text-sm text-white flex items-center justify-center hover:bg-none hover:border-2 hover:border-[#AC87C5] hover:text-[#AC87C5]"></a>
                                         </div>
                                     </td>
                                 </tr>
@@ -152,13 +201,95 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                         <?php endif; ?>
                     </tbody>
                 </table>
+
+                <!-- Modal Hapus -->
+                <div id="deleteModal" class="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
+                    <div class="bg-white p-8 rounded-xl w-2/3 md:w-6/12 lg:w-1/3">
+                        <div class="text-center mb-4">
+                            <h2 class="text-lg font-bold">Konfirmasi Penghapusan</h2>
+                        </div>
+                        <p class="mb-4">Apakah Anda yakin ingin menghapus item ini?</p>
+                        <div class="text-center">
+                            <button id="cancelDeleteButton" class="text-[#AC87C5] border-2 border-[#AC87C5] hover:bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:border-none hover:text-white px-4 py-2 rounded-xl mr-2">Batal</button>
+                            <button id="confirmDeleteButton" class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] hover:text-[#AC87C5] text-white  px-4 py-2 rounded-xl">Hapus</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-4 w-[400px] md:w-[700px] lg:w-[950px]">
+                    <?php if ($halamanAktif > 1) : ?>
+                        <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $halamanAktif - 1 ?>&keyword=<?= isset($keyword) ? $keyword : '' ?>">&laquo;</a>
+                    <?php endif; ?>
+
+                    <?php
+                    $start = max(1, $halamanAktif - 1);
+                    $end = min($jumlahHalaman, $halamanAktif + 1);
+                    ?>
+
+                    <?php if ($start > 1) : ?>
+                        <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=1&keyword=<?= isset($keyword) ? $keyword : '' ?>">1</a>
+                    <?php endif; ?>
+
+                    <?php for ($i = $start; $i <= $end; $i++) : ?>
+                        <?php if ($i == $halamanAktif) : ?>
+                            <span class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold text-white bg-[#AC87C5]"><?= $i ?></span>
+                        <?php else : ?>
+                            <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $i ?>&keyword=<?= isset($keyword) ? $keyword : '' ?>"><?= $i ?></a>
+                        <?php endif; ?>
+                    <?php endfor; ?>
+
+                    <?php if ($end < $jumlahHalaman) : ?>
+                        <?php if ($end < $jumlahHalaman - 1) : ?>
+                            <span class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold">...</span>
+                        <?php endif; ?>
+                        <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $jumlahHalaman ?>&keyword=<?= isset($keyword) ? $keyword : '' ?>"><?= $jumlahHalaman ?></a>
+                    <?php endif; ?>
+
+                    <?php if ($halamanAktif < $jumlahHalaman) : ?>
+                        <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $halamanAktif + 1 ?>&keyword=<?= isset($keyword) ? $keyword : '' ?>">&raquo;</a>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
-    
 
     <script src="../../script.js"></script>
+    <script>
+       // Function to set the active nav-link
+       function setActiveNavLink() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
 
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                    link.classList.add('text-white', 'w-11/12', 'rounded-r-full', 'bg-gradient-to-b', 'from-[#AC87C5]', 'via-[#E0AED0]', 'to-[#FFE5E5]');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', setActiveNavLink);
+
+        // Fungsi untuk membuka modal
+        function openDeleteModal(id) {
+            var deleteModal = document.getElementById('deleteModal');
+            deleteModal.classList.remove('hidden');
+
+            // Setelah tombol Hapus di modal diklik, redirect ke halaman delete.php dengan id yang sesuai
+            var confirmDeleteButton = document.getElementById('confirmDeleteButton');
+            confirmDeleteButton.addEventListener('click', function() {
+                window.location.href = 'hapus.php?id=' + id;
+            });
+
+            // Fungsi untuk menutup modal
+            var cancelDeleteButton = document.getElementById('cancelDeleteButton');
+            cancelDeleteButton.addEventListener('click', function() {
+                deleteModal.classList.add('hidden');
+            });
+        }
+    </script>
 
 </body>
 

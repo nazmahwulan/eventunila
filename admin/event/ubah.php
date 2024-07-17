@@ -1,25 +1,38 @@
 <?php
 include '../../function.php';
-
 session_start();
 
-// ambil data di URL
-if (isset($_GET["id"])) {
-    $id = $_GET["id"];
-    // query data event berdasarkan id
-    $event = query("SELECT events.*, kategori.kategori 
-    FROM events 
-    JOIN kategori ON events.kategori_id = kategori.id 
-    WHERE events.id = $id")[0];
+// Periksa apakah peran pengguna adalah admin
+if ($_SESSION['user_role'] !== 'admin') {
+    // Jika tidak, arahkan ke halaman lain atau tampilkan pesan error
+    header('Location:../../index.php');
+    exit;
+}
+
+// Ambil data di URL
+if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
+    $id = intval($_GET["id"]);
+    // Query data event berdasarkan ID
+    $events = query("SELECT events.*, kategori.kategori FROM events JOIN kategori ON events.kategori_id = kategori.id WHERE events.event_id = $id");
+
+    // Periksa apakah event ditemukan
+    if (count($events) === 0) {
+        // Jika tidak ditemukan, sertakan halaman error
+        include '../../error.php';
+        exit;
+    } else {
+        // Jika ditemukan, ambil data event
+        $event = $events[0];
+    }
 } else {
-    // jika tidak ada id, redirect ke halaman lain atau tampilkan pesan error
-    header('Location: /event/admin/event/index.php');
+    // Jika tidak ada ID atau ID tidak valid, sertakan halaman error
+    include '../../error.php';
     exit;
 }
 
 $kategori = query("SELECT * FROM kategori");
 
-// cek apakah tombol submit sudah ditekan apa belum
+// Cek apakah tombol submit sudah ditekan
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (ubah2($_POST) > 0) {
         // Set flashdata untuk sukses
@@ -34,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'type' => 'error'
         ];
     }
-    // Redirect ke halaman yang sama dengan id
+    // Redirect ke halaman yang sama dengan ID
     header('Location: ubah.php?id=' . $id);
     exit;
 }
@@ -53,6 +66,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 </head>
 
 <body>
@@ -77,10 +91,10 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                 <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php">
-                    <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
+                <a class="nav-link gap-3 py-2.5 px-10 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/index.php">
+                    <i class="ti ti-arrows-exchange ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class=" group-hover:text-white group-active:text-white">Dahsboard Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
+                <a class="nav-link gap-3 px-10 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../../logout.php">
                     <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
                 </a>
             </nav>
@@ -101,10 +115,10 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                 <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/pengguna/index.php">
                     <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/profilAdmin/index.php?">
-                    <i class="ti ti-users ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Profile</span>
+                <a class="nav-link gap-3 py-2.5 px-12 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/index.php">
+                    <i class="ti ti-arrows-exchange ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class=" group-hover:text-white group-active:text-white">Dahsboard Pengguna</span>
                 </a>
-                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../logout.php">
+                <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5]  active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="../../logout.php">
                     <i class="ti ti-logout ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Keluar</span>
                 </a>
             </nav>
@@ -116,58 +130,51 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
             </div>
         </div>
 
-
         <div class="">
-        <div class="flex justify-center lg:hidden">
+            <div class="flex justify-center lg:hidden">
                 <hr class="border-white border-1 w-full md:w-[1050px]">
             </div>
-            <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Event</h1>
+            <div class="flex justify-center lg:justify-start lg:gap-[275px]">
+                <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Event</h1>
+                <?php if ($flash) : ?>
+                    <div id="flash-message" class="flex justify-center items-center my-4">
+                        <div class="flex items-center px-4 py-2 rounded-xl bg-white text-black font-semibold shadow-2xl">
+                            <?php if ($flash['type'] == 'success') : ?>
+                                <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
+                            <?php elseif ($flash['type'] == 'error') : ?>
+                                <i class="ti ti-circle-x-filled text-2xl text-[#FF0000] mr-2"></i>
+                            <?php endif; ?>
+                            <div class="text-center">
+                                <?php echo $flash['message']; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
             <div class="hidden lg:flex justify-center">
                 <hr class="border-white border-1 w-[1000px]">
             </div>
             <h2 class="text-white font-bold text-2xl lg:text-4xl flex justify-center my-6">Detail Event</h2>
 
-            <!-- <div class="flex flex-wrap text-white list-none mx-14 my-5 lg:mx-10 ">
-                <div class="flex font-semibold">
-                    <a href="../beranda.php">
-                        <i class="ti ti-home-filled pr-2"></i>Beranda</a>
-                </div>
-                <span class="mx-2">/</span>
-                <a href="../event/index.php">
-                    <li class="text-white font-semibold">Event</li>
-                </a>
-                <span class="mx-2">/</span>
-                <a href="../event/ubah.php">
-                    <li class="text-white font-semibold">Detail Event</li>
-                </a>
-            </div> -->
-
-            <?php if ($flash) : ?>
-                <div id="flash-message" class="flex-1">
-                    <div class="px-4 py-2 rounded-xl text-white <?php echo ($flash['type'] == 'success') ? 'bg-green-500' : ($flash['type'] == 'error' ? 'bg-red-500' : ($flash['type'] == 'warning' ? 'bg-yellow-500' : 'bg-blue-500')); ?>">
-                        <?php echo $flash['message']; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
             <div class="flex justify-center mt-6">
                 <div class="bg-white rounded-xl w-[340px] md:w-[1000px] h-3/5 mx-10 lg:mx-5  pt-6">
                     <form action="" method="post">
-                        <input type="hidden" name="id" value="<?php echo $event["id"]; ?> ">
+                        <input type="hidden" name="id" value="<?php echo $event["event_id"]; ?> ">
                         <label for="judul" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-[#AC87C5] font-bold text-sm">Nama Event</label>
                         <div class="flex justify-center">
-                            <input type="text" class="px-4 w-11/12 h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="judul" id="judul" required value="<?php echo $event["judul"]; ?>" disabled>
+                            <input type="text" class="px-4 w-11/12 h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="judul" id="judul" value="<?php echo $event["judul"]; ?>" disabled>
                         </div>
                         <div class="flex gap-4">
                             <div class="flex-1">
                                 <label for="kategori" class="block ml-4 md:ml-8 lg:ml-10 my-2 text-[#AC87C5] font-bold text-sm">Kategori</label>
                                 <div class="ml-4 md:ml-8 lg:ml-10 flex justify-start">
-                                    <input type="text" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="kategori" id="kategori" required value="<?php echo $event["kategori"]; ?>" disabled>
+                                    <input type="text" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="kategori" id="kategori" value="<?php echo $event["kategori"]; ?>" disabled>
                                 </div>
                             </div>
                             <div class="flex-1">
                                 <label for="lokasi" class="block mr-4 md:mr-8 lg:mr-10 my-2 text-[#AC87C5] font-bold text-sm">Lokasi</label>
                                 <div class="mr-4 md:mr-8 lg:mr-10flex justify-start">
-                                    <input type="text" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="lokasi" id="lokasi" required value="<?php echo $event["lokasi"]; ?>" disabled>
+                                    <input type="text" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="lokasi" id="lokasi" value="<?php echo $event["lokasi"]; ?>" disabled>
                                 </div>
                             </div>
                         </div>
@@ -175,13 +182,13 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                             <div class="flex-1">
                                 <label for="tanggal" class="block ml-4 md:ml-8 lg:ml-10 my-2 text-[#AC87C5] font-bold text-sm">Tanggal</label>
                                 <div class="ml-4 md:ml-8 lg:ml-10 flex justify-start">
-                                    <input type="date" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="tanggal" id="tanggal" required value="<?php echo $event["tanggal"]; ?>" disabled>
+                                    <input type="date" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="tanggal" id="tanggal" value="<?php echo $event["tanggal"]; ?>" disabled>
                                 </div>
                             </div>
                             <div class="flex-1">
                                 <label for="waktu" class="block mr-4 md:mr-8 lg:mr-10 my-2 text-[#AC87C5] font-bold text-sm">Waktu</label>
                                 <div class="mr-4 md:mr-8 lg:mr-10 flex justify-start">
-                                    <input type="time" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="waktu" id="waktu" required value="<?php echo $event["waktu"]; ?>" disabled>
+                                    <input type="time" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="waktu" id="waktu" value="<?php echo $event["waktu"]; ?>" disabled>
                                 </div>
                             </div>
                         </div>
@@ -191,16 +198,20 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                         </div>
                         <label for="penyelenggara" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-[#AC87C5] font-bold text-sm">Nama Penyelenggara</label>
                         <div class="flex justify-center">
-                            <input type="text" class="px-4 w-11/12 h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="penyelenggara" id="penyelenggara" required value="<?php echo $event["penyelenggara"]; ?>" disabled>
+                            <input type="text" class="px-4 w-11/12 h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="penyelenggara" id="penyelenggara" value="<?php echo $event["penyelenggara"]; ?>" disabled>
                         </div>
                         <label for="deskripsi" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-[#AC87C5] font-bold text-sm">Deskripsi Event</label>
                         <div class="flex justify-center">
-                            <input type="text" class="text-justify px-4 w-11/12 h-64 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="deskripsi" id="deskripsi" required value="<?php echo $event["deskripsi"]; ?>" disabled></textarea>
+                            <div class="rounded-2xl w-11/12 border-2 border-[#AC87C5] max-h-60 overflow-y-auto">
+                                <h1 class="text-black text-base text-justify px-4 py-2 bg-gray-100">
+                                    <?php echo htmlspecialchars_decode($event["deskripsi"]); ?>
+                                </h1>
+                            </div>
                         </div>
                         <div class="relative">
                             <label for="status" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-[#AC87C5] font-bold text-sm">Status</label>
                             <div class="flex justify-center">
-                                <input id="statusDropdownInput" type="text" class="px-4 w-11/12 h-10 bg-white  rounded-xl border-2 border-[#756AB6] form-control" name="status" id="status" aria-describedby="penyelenggaraHelp" required value="<?php echo $event["status"]; ?>" readonly>
+                                <input id="statusDropdownInput" type="text" class="px-4 w-11/12 h-10 bg-white  rounded-xl border-2 border-[#756AB6] form-control" name="status" id="status" aria-describedby="penyelenggaraHelp" value="<?php echo $event["status"]; ?>" readonly>
                                 <div id="statusDropdownMenu" class="hidden absolute left-[200px] transform -translate-x-1/2 mt-1 w-full max-w-xs rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                                     <ul class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="statusDropdownInput">
                                         <li><button type="button" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sedang Diajukan</button></li>
@@ -221,35 +232,38 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
         </div>
     </div>
 
-    <script src="../../script.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script script src="../../script.js"></script>
 
-    <!-- <script>
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Ambil pathname dari current URL tanpa query string
-            let currentPathname = window.location.pathname;
-            console.log('Current URL Pathname:', currentPathname);
+            // Ambil path URL halaman saat ini
+            let currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
 
-            // Loop melalui setiap link navbar dan periksa jika pathname-nya cocok dengan currentPathname tanpa query string
-            document.querySelectorAll('.nav-link').forEach(function(link) {
-                let linkPathname = new URL(link.href).pathname;
-                console.log('Checking link Pathname:', linkPathname);
+            console.log("Current Path:", currentPath);
 
-                // Menghapus string query dari pathname jika ada
-                let linkPathnameWithoutQuery = linkPathname.split('?')[0];
-                let currentPathnameWithoutQuery = currentPathname.split('?')[0];
-                console.log('Current Pathname Without Query:', currentPathnameWithoutQuery);
-                console.log('Link Pathname Without Query:', linkPathnameWithoutQuery);
+            // Jika currentPath mengandung 'ubah.php', ubah menjadi path yang sesuai dengan index.php
+            if (currentPath.includes('ubah.php')) {
+                currentPath = '/event/admin/event/index.php';
+            }
 
-                // Jika currentPathname mengandung linkPathname atau sebaliknya
-                if (currentPathnameWithoutQuery.includes(linkPathnameWithoutQuery) || linkPathnameWithoutQuery.includes(currentPathnameWithoutQuery)) {
-                    link.classList.add('active');
-                    console.log('Match found:', link.href);
-                    link.classList.add('text-white', 'w-11/12', 'rounded-r-full', 'bg-gradient-to-b', 'from-[#AC87C5]', 'via-[#E0AED0]', 'to-[#FFE5E5]');
+            navLinks.forEach(link => {
+                // Ambil path dari URL tautan
+                const linkPath = new URL(link.href).pathname;
+                console.log("Link Path:", linkPath);
+
+                // Periksa apakah currentPath cocok dengan linkPath
+                if (currentPath === linkPath) {
+                    console.log("Active link found:", link.href);
+                    // Tambahkan kelas aktif jika path sesuai
+                    link.classList.add('bg-gradient-to-b', 'from-[#AC87C5]', 'via-[#E0AED0]', 'to-[#FFE5E5]', 'w-11/12', 'rounded-r-full', 'text-white');
+                } else {
+                    // Hapus kelas aktif jika path tidak sesuai
+                    link.classList.remove('w-11/12', 'rounded-r-full', 'text-white');
                 }
             });
         });
-    </script> -->
+    </script>
 </body>
 
 </html>
