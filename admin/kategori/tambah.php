@@ -47,7 +47,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
 <body>
     <div class="lg:flex bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] w-full h-screen lg:h-full py-6 lg:p-5 ">
         <div class="flex justify-between mx-10 pb-6 lg:mx-0 lg:pb-0">
-            <a class="text-white font-bold text-2xl lg:hidden" href="index.php">EventUnila</a>
+            <a class="text-white font-bold text-2xl lg:hidden" href="../index.php">EventUnila</a>
             <button id="dropdownButton">
                 <i id="dropdownIcon" class="ti ti-user-circle text-white text-3xl lg:hidden"></i>
             </button>
@@ -76,7 +76,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
         </div>
 
         <div class="bg-white shadow-xl lg:w-1/5 lg:h-full rounded-xl hidden lg:flex flex-col lg:mr-4">
-            <a class="text-[#AC87C5] font-bold text-4xl py-6 flex justify-center" href="index.php">EventUnila</a>
+            <a class="text-[#AC87C5] font-bold text-4xl py-6 flex justify-center" href="../index.php">EventUnila</a>
             <nav class=" w-full flex flex-col ">
                 <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/beranda.php">
                     <i class="ti ti-dashboard ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Beranda</span>
@@ -106,12 +106,12 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
         </div>
 
         <div class="">
-        <div class="flex justify-center lg:hidden">
+            <div class="flex justify-center lg:hidden">
                 <hr class="border-white border-1 w-full md:w-[1050px]">
             </div>
             <div class="flex gap-[250px]">
                 <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Kategori</h1>
-            </div>            
+            </div>
             <div class="hidden lg:flex justify-center">
                 <hr class="border-white border-1 w-[1000px]">
             </div>
@@ -124,11 +124,9 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                         <div class="mt-2">
                             <input type="text" class="px-4 w-full h-10 bg-white shadow-2xl rounded-xl border-2 border-[#756AB6]" name="kategori" id="kategori" aria-describedby="lokasiHelp" required placeholder="Kategori">
                         </div>
-                        <div class="text-center  mt-4 rounded-xl w-24 h-8 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
-                            <button type="submit" name="submit" class=" text-white text-sm font-bold pt-[5px] group-hover:text-[#AC87C5]">
-                                Simpan
-                            </button>
-                        </div>
+                        <button type="submit" name="submit" class="text-center  mt-4 rounded-xl w-24 h-8 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5]  text-white text-sm font-bold hover:text-[#AC87C5]">
+                            Simpan
+                        </button>
                     </form>
                 </div>
             </div>

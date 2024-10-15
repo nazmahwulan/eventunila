@@ -37,7 +37,7 @@ $admin = countAdmin();
 <body>
     <div class="lg:flex bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] w-full md:h-screen lg:h-full py-6 lg:pt-5 lg:pb-5 lg:pl-5 lg:pr-[45px]">
         <div class="flex justify-between mx-10 pb-6 lg:mx-0 lg:pb-0">
-            <a class="text-white font-bold text-2xl lg:hidden" href="index.php">EventUnila</a>
+            <a class="text-white font-bold text-2xl lg:hidden" href="/index.php">EventUnila</a>
             <button id="dropdownButton">
                 <i id="dropdownIcon" class="ti ti-user-circle text-white text-3xl lg:hidden"></i>
             </button>
@@ -66,7 +66,7 @@ $admin = countAdmin();
         </div>
 
         <div class="bg-white shadow-xl lg:w-1/5 lg:h-full rounded-xl hidden lg:flex flex-col lg:mr-4">
-            <a class="text-[#AC87C5] font-bold text-4xl py-6 flex justify-center" href="index.php">EventUnila</a>
+            <a class="text-[#AC87C5] font-bold text-4xl py-6 flex justify-center" href="/index.php">EventUnila</a>
             <nav class=" w-full flex flex-col ">
                 <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/beranda.php">
                     <i class="ti ti-dashboard ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Beranda</span>
@@ -106,7 +106,7 @@ $admin = countAdmin();
             </div>
 
             <div class="flex items-center justify-center lg:mt-10">
-                <div class="mx-10 grid gap-6  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-10">
+                <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-10">
                     <div class="flex flex-col items-center justify-center bg-white text-[#AC87C5] py-6 px-10 shadow-lg rounded-xl w-[300px]">
                         <i class="ti ti-calendar-check text-6xl mb-4"></i>
                         <h2 class="text-3xl font-bold"><?= $activeEvents ?></h2>
@@ -155,21 +155,6 @@ $admin = countAdmin();
             });
         });
     </script>
-    <!-- <script>
-        const dropdownButton = document.getElementById("dropdownButton");
-        const navbarDropdownMenu = document.getElementById("navbarDropdownMenu");
-        if (dropdownButton && navbarDropdownMenu) {
-            dropdownButton.addEventListener("click", function() {
-                navbarDropdownMenu.classList.toggle("hidden");
-            });
-
-            document.addEventListener("click", function(event) {
-                if (!dropdownButton.contains(event.target) && !navbarDropdownMenu.contains(event.target)) {
-                    navbarDropdownMenu.classList.add("hidden");
-                }
-            });
-        }
-    </script> -->
 </body>
 
 </html>

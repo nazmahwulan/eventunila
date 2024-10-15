@@ -22,7 +22,7 @@ if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
         exit;
     } else {
         // Jika ditemukan, lanjutkan penghapusan event
-        if (hapus2($id) > 0) {
+        if (hapusEvent($id) > 0) {
             // Set flashdata untuk sukses
             $_SESSION['flash'] = [
                 'message' => 'Event berhasil dihapus!',

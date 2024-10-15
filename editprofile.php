@@ -1,14 +1,6 @@
 <?php
-// ob_start(); // Memulai buffer output
-// session_start(); // Memulai sesi
-
 include 'function.php';
-// include 'navbar.php';
 
-// if (!isset($_SESSION["login"])) {
-//     header("location:login.php");
-//     exit;
-// }
 // Periksa apakah parameter ID ada dan valid
 if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
     $id = intval($_GET["id"]);
@@ -22,45 +14,9 @@ if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
         // Ambil data pengguna jika ada
         $user = $users[0];
         $isValidUser = true;
-        // $hashedPassword = $user["password"];
-
-        // // Menampilkan hanya sebagian dari hashed password, misalnya 3 karakter pertama dan 3 karakter terakhir
-        // $shortPassword = substr($hashedPassword, 0, 3) . '...' . substr($hashedPassword, -3);
-    }
-    // } else {
-    //     // Jika tidak ada ID atau ID tidak valid, sertakan halaman error
-    //     include 'error.php';
-    //     exit;
+    } 
 }
-// ambil data di URL
-// $id = $_GET["id"];
-// // query data users berdasarkan id
-// $users = query("SELECT * FROM users WHERE id = $id")[0];
 
-// // cek apakah tombol submit sudah ditekan apa belum
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//     if (ubahProfil($_POST) > 0) {
-//         // Set flashdata untuk sukses
-//         $_SESSION['flash'] = [
-//             'message' => 'Profil berhasil diubah!',
-//             'type' => 'success'
-//         ];
-//     } else {
-//         // Set flashdata untuk error
-//         $_SESSION['flash'] = [
-//             'message' => 'Profil gagal diubah!',
-//             'type' => 'error'
-//         ];
-//     }
-//     // Redirect ke halaman yang sama dengan id
-//     header('Location: profilesaya.php?id=' . $id);
-//     exit;
-// }
-
-// // Cek apakah ada flashdata
-// $flash = isset($_SESSION['flash']) ? $_SESSION['flash'] : null;
-// unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
-// ob_end_flush(); // Mengakhiri dan mengirim buffer output
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,8 +31,8 @@ if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
 </head>
 
 <body>
-<?php if (isset($isValidUser) && $isValidUser) : ?>
-    <?php
+    <?php if (isset($isValidUser) && $isValidUser) : ?>
+        <?php
         ob_start(); // Memulai buffer output
         include 'navbar.php';
 
@@ -117,49 +73,58 @@ if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
         <div class="flex flex-wrap list-none mx-14 mt-10 lg:mx-32">
             <div class="flex hover:text-[#756AB6] font-semibold">
                 <a href="index.php">
-                    <i class="ti ti-home-filled pr-2"></i>Home</a>
+                    <i class="ti ti-home-filled pr-2"></i>Beranda</a>
             </div>
             <span class="mx-2">/</span>
             <div class="flex hover:text-[#756AB6] font-semibold">
                 <a href="profilesaya.php?id=<?php echo $_SESSION["users_id"]; ?>">Profile Saya</a>
             </div>
             <span class="mx-2">/</span>
-            <li class="text-[#756AB6] font-semibold">Edit Profil</li>
+            <li class="text-[#756AB6] font-semibold">Edit Profile</li>
         </div>
 
         <div class="flex justify-center my-8">
-            <h1 class="text-[#756AB6] font-bold text-3xl">Edit Profil Saya</h1>
+            <h1 class="text-[#756AB6] font-bold text-3xl">Edit Profile Saya</h1>
         </div>
-        <h2 class="mx-10 lg:mx-[340px] md:mx-[70px] block mt-4 text-[#756AB6] font-bold text-lg">Detail Profil</h2>
+        <h2 class="mx-10 lg:mx-[340px] md:mx-[70px] block mt-4 text-[#756AB6] font-bold text-lg">Detail Profile</h2>
         <form action="" method="post">
             <input type="hidden" name="id" value="<?php echo $user["id"]; ?>">
             <div class="">
-                <label for="nama" class="block mx-10 lg:mx-[340px] md:mx-[70px] my-2 text-gray-500 font-bold text-sm">Nama</label>
-                <div class="flex justify-center">
-                    <input type="text" class="px-4 w-10/12 lg:w-6/12 h-10 bg-white  rounded-xl border-2 border-[#756AB6]" name="nama" id="nama" value="<?php echo $user["nama"]; ?>" required>
+                <div class="mx-10 lg:mx-[340px] md:mx-[70px]">
+                    <label for="nama" class="block  my-2 text-gray-500 font-bold text-sm">Nama</label>
+                    <div class="flex justify-center">
+                        <input type="text" class="px-4 w-full h-10 bg-white  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6]" name="nama" id="nama" value="<?php echo $user["nama"]; ?>" required>
+                    </div>
                 </div>
-                <label for="email" class="block mx-10  lg:mx-[340px] md:mx-[70px] mt-2 md:mt-4 my-2 text-gray-500 font-bold text-sm">Email</label>
-                <div class="flex justify-center">
-                    <input type="text" class="bg-gray-100 px-4 lg:w-6/12 w-10/12 h-10 bg-white  rounded-xl border-2 border-[#756AB6]" name="email" id="email" value="<?php echo $user["email"]; ?>" required disabled>
+                <div class="mx-10 lg:mx-[340px] md:mx-[70px]">
+                    <label for="email" class="block  mt-2 md:mt-4 my-2 text-gray-500 font-bold text-sm">Email</label>
+                    <div class="flex justify-center">
+                        <input type="text" class="bg-gray-100 px-4 w-full h-10 bg-white  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6]" name="email" id="email" value="<?php echo $user["email"]; ?>" required disabled>
+                    </div>
                 </div>
-
-                <h3 class="px-10 lg:px-[340px] md:px-[70px] block mt-4 text-[#756AB6] font-bold text-lg">Ubah Kata Sandi</h3>
-
-                <label for="password1" class="block mx-10 lg:mx-[340px] md:mx-[70px] mt-2 md:mt-4 my-2 text-gray-500 font-bold text-sm">Kata Sandi Lama</label>
-                <div class="flex justify-center">
-                    <input type="password" class="px-4 lg:w-6/12 w-10/12 h-10 bg-white  rounded-xl border-2 border-[#756AB6]" name="password1" id="password1" placeholder="Masukan Kata Sandi Lama">
+                <h3 class="px-10 lg:px-[340px] md:px-[70px] block mt-4 text-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6] font-bold text-lg">Ubah Kata Sandi</h3>
+                <div class="mx-10 lg:mx-[340px] md:mx-[70px]">
+                    <label for="password1" class="block mt-2 md:mt-4 my-2 text-gray-500 font-bold text-sm">Kata Sandi Lama</label>
+                    <div class="flex justify-center">
+                        <input type="password" class="px-4 w-full h-10 bg-white  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6]" name="password1" id="password1" placeholder="Masukan Kata Sandi Lama">
+                    </div>
                 </div>
-                <label for="password2" class="block mx-10  lg:mx-[340px] md:mx-[70px] mt-2 py-2 text-gray-500 font-bold text-sm">Kata Sandi Baru</label>
-                <div class="flex justify-center">
-                    <input type="password" class="px-4 lg:w-6/12 w-10/12 h-10 bg-white  rounded-xl border-2 border-[#756AB6]" name="password2" id="password2" placeholder="Masukan Kata Sandi Baru">
+                <div class="mx-10 lg:mx-[340px] md:mx-[70px]">
+                    <label for="password2" class="block  mt-2 py-2 text-gray-500 font-bold text-sm">Kata Sandi Baru</label>
+                    <div class="flex justify-center">
+                        <input type="password" class="px-4 w-full h-10 bg-white  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6]" name="password2" id="password2" placeholder="Masukan Kata Sandi Baru">
+                    </div>
                 </div>
-                <label for="password3" class="block mx-10  lg:mx-[340px] md:mx-[70px] mt-2 my-2 text-gray-500 font-bold text-sm">Konfirmasi Kata Sandi Baru</label>
-                <div class="flex justify-center">
-                    <input type="password" class="px-4 lg:w-6/12 w-10/12 h-10 bg-white  rounded-xl border-2 border-[#756AB6]" name="password3" id="password3" placeholder="Masukan Konfirmasi Kata Sandi Baru">
+                <div class="mx-10 lg:mx-[340px] md:mx-[70px]">
+                    <label for="password3" class="block  mt-2 my-2 text-gray-500 font-bold text-sm">Konfirmasi Kata Sandi Baru</label>
+                    <div class="flex justify-center">
+                        <input type="password" class="px-4 w-full h-10 bg-white  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6]" name="password3" id="password3" placeholder="Masukan Konfirmasi Kata Sandi Baru">
+                    </div>
                 </div>
                 <!-- button -->
-                <div class="text-center mx-auto my-10 rounded-xl md:w-96 lg:w-96 w-64 h-10 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
-                    <button type="submit" name="submit" class=" text-white text-sm font-bold pt-[8px] group-hover:text-[#AC87C5]">
+                <div class="mx-10 lg:mx-[340px] md:mx-[70px]">
+                <div class="flex justify-center">
+                    <button type="submit" name="submit" class="text-center my-10 rounded-xl md:w-96 lg:w-96 w-full h-10 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] text-white text-sm font-bold hover:text-[#AC87C5]">
                         Simpan
                     </button>
                 </div>
@@ -171,11 +136,11 @@ if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
                 <div class="mb-6 md:mb-0">
                     <p class="text-white font-bold text-2xl md:text-4xl">EventUnila</p>
                     <p class="text-gray-500 font-bold text-sm mt-4">Kumpulan Pengalaman, <br> Ayo bergabung bersama di EventUnila!</p>
-                    <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
+                    <!-- <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
                         <a href="about.php">Tentang Kami</a>
                         <a href="kontak.php">Kontak</a>
                         <a href="kebijakan.php">Kebijakan Pribadi</a>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="text-white font-bold text-sm">
                     <p>Jl. Prof. Sumantri Brojonegoro No.1 Gedong Meneng, <br>Bandar Lampung.</p>

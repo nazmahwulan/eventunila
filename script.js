@@ -1,15 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // // Navbar active link
-    // let currentUrl = window.location.href;
-    // document.querySelectorAll('.nav-link').forEach(function (link) {
-    //     if (currentUrl === link.href) {
-    //         link.classList.add('active');
-    //         link.classList.add('text-white', 'w-11/12', 'rounded-r-full', 'bg-gradient-to-b', 'from-[#AC87C5]', 'via-[#E0AED0]', 'to-[#FFE5E5]');
-        
-    //     }
-    // });
-
-    // Dropdown di navbar
     const dropdownButton = document.getElementById("dropdownButton");
     const navbarDropdownMenu = document.getElementById("navbarDropdownMenu");
     if (dropdownButton && navbarDropdownMenu) {
@@ -102,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 1000);
     }
 
+    
     // Toggle password visibility
     const togglePasswordButton = document.getElementById('togglePassword');
     if (togglePasswordButton) {

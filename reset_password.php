@@ -136,8 +136,6 @@ if (isset($_GET['token'])) {
             }
         });
     </script>
-
-    <!-- <script src="script.js"></script> -->
 </body>
 
 </html>

@@ -18,32 +18,26 @@
                 <button id="searchDropdownButton" class="text-2xl text-white">
                     <i id="searchIcon" class="ti ti-search sm:hidden"></i>
                 </button>
-                <div id="searchDropdownMenu" class="hidden absolute right-0 md:right-0 w-[420px] bg-gradient-to-r from-[#AC87C5] to-[#E0AED0]">
+                <div id="searchDropdownMenu" class="hidden absolute right-0 md:right-0 w-full bg-gradient-to-r from-[#AC87C5] to-[#E0AED0]">
                     <form action="halamanevent.php" method="post" class="flex items-center p-5 w-full">
                         <button type="button" id="closeSearchButton" class="text-white font-bold text-2xl mr-4">
                             <i class="ti ti-chevron-left"></i>
                         </button>
-                        <input type="text" class="block w-full h-10 px-4 border border-gray-300 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-purple-500" name="keyword" placeholder="Cari Event" value="<?php echo isset($_POST['keyword']) ? htmlspecialchars($_POST['keyword']) : ''; ?>" autocomplete="off">
+                        <input type="text" class="block w-full h-10 px-4 rounded-l-xl focus:outline-none " name="keyword" placeholder="Cari Event" value="<?php echo isset($_POST['keyword']) ? htmlspecialchars($_POST['keyword']) : ''; ?>" autocomplete="off">
                         <button type="submit" name="cari3" class="text-white w-10 h-10 rounded-r-xl bg-[#AC87C5] flex items-center justify-center">
                             <i class="ti ti-search"></i>
                         </button>
                     </form>
                 </div>
-                <form action="halamanevent.php" method="post" class="hidden sm:flex">
-                    <input type="text" class="block px-4 w-60 h-10  rounded-l-xl" name="keyword" placeholder="Cari Event" value="<?php echo isset($_POST['keyword']) ? htmlspecialchars($_POST['keyword']) : ''; ?>" autocomplete="off">
-                    <button type="submit" name="cari3" class="ti ti-search  text-white px-2 w-10 h-10 rounded-r-xl bg-[#AC87C5]">
+                <form action="halamanevent.php" method="GET" class="hidden sm:flex">
+                    <input type="text" class="block px-4 w-60 h-10  rounded-l-xl focus:outline-none " name="keyword" placeholder="Cari Event" value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>" autocomplete="off">
+                    <button type="submit" class="ti ti-search  text-white px-2 w-10 h-10 rounded-r-xl bg-[#AC87C5]">
                     </button>
                 </form>
                 <div id="navbarIcons" class="flex items-center">
                     <!-- Konten Navbar lainnya -->
                     <?php
                     session_start(); // Mulai sesi
-
-                    if (isset($_COOKIE['login'])){
-                        if($_COOKIE['login'] == 'true') {
-                            $_SESSION['login'] = true;
-                        }
-                    }
 
                     if (isset($_SESSION['nama'])) {
                         // Jika sesi nama telah diatur, artinya pengguna sudah login
@@ -52,7 +46,7 @@
                             <button id="dropdownButton" class="flex items-center space-x-2">
                                 <i class="ti ti-user-circle ps-2 text-white text-3xl md:text-4xl"></i>
                             </button>
-                            <div id="navbarDropdownMenu" class="absolute hidden border-2 border-[#AC87C5] top-[50px] md:top-[55px] right-[-10px] md:right-[-20px] w-[350px] bg-white p-[20px] m-[10px] rounded-xl">
+                            <div id="navbarDropdownMenu" class="absolute border-2 border-[#AC87C5] hidden top-[50px] md:top-[55px] right-[-10px] md:right-[-20px] w-[80vw] md:w-[350px] bg-white p-[20px] m-[10px] rounded-xl">
                                 <div class="flex items-center mx-2 gap-5">
                                     <i class="ti ti-user-circle text-[#AC87C5] text-4xl "></i>
                                     <div class="flex items-center font-semibold"><?= ucwords(strtolower($_SESSION['nama'])) ?></div>
@@ -62,7 +56,7 @@
                                     <i class="text-xl ti ti-user text-[#AC87C5]"></i> <span class="text-[#AC87C5] font-semibold">Profile</span>
                                     <!-- <p class="text-[#AC87C5] font-semibold">Profil Saya</p> -->
                                 </a>
-                                <a class="flex items-center mx-4 gap-7 mt-[12px] "href="eventsaya.php?id=<?php echo $_SESSION["users_id"]; ?>">
+                                <a class="flex items-center mx-4 gap-7 mt-[12px] " href="eventsaya.php?id=<?php echo $_SESSION["users_id"]; ?>">
                                     <i class="text-xl ti ti-calendar-event   text-[#AC87C5]"></i> <span class="text-[#AC87C5] font-semibold">Event Saya</span>
                                     <!-- <p class="text-[#AC87C5] font-semibold">Profil Saya</p> -->
                                 </a>
@@ -72,13 +66,13 @@
                                 <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') : ?>
                                     <!-- <hr class="border-0 h-[1px] w-full bg-[#AC87C5] mt-[15px] mb-[10px]"> -->
                                     <a class="flex items-center mx-4 gap-7 mt-[12px]" href="admin/beranda.php">
-                                    <i class="text-xl ti ti-arrows-exchange  text-[#AC87C5]"></i> <span class="text-[#AC87C5] font-semibold">Dashboard Admin</span>
+                                        <i class="text-xl ti ti-arrows-exchange  text-[#AC87C5]"></i> <span class="text-[#AC87C5] font-semibold">Dashboard Admin</span>
                                         <!-- <p class="text-[#AC87C5] font-semibold">Beralih ke Dashboard Admin</p> -->
                                     </a>
                                 <?php endif; ?>
                                 <hr class="border-0 h-[1px] w-full bg-[#AC87C5] mt-[15px] mb-[10px]">
                                 <a class="flex items-center mx-4 gap-7 mt-[12px]" href="logout.php">
-                                <i class=" text-xl ti ti-logout  text-red-600"></i> <span class="text-red-600 font-semibold">Keluar</span>
+                                    <i class=" text-xl ti ti-logout  text-red-600"></i> <span class="text-red-600 font-semibold">Keluar</span>
                                     <!-- <p class="text-red-600 font-bold">Keluar</p> -->
                                 </a>
                             </div>
@@ -91,33 +85,41 @@
                             <button id="dropdownButton" class="flex items-center sm:hidden">
                                 <i id="dropdownIcon" class="ti ti-baseline-density-medium text-white text-2xl"></i>
                             </button>
-                            <div id="navbarDropdownMenu" class="absolute hidden right-[-23px] w-[380px] h-[115px] top-[20px] border-2 border-[#AC87C5] bg-white mt-10 rounded-xl">
+                            <div id="navbarDropdownMenu" class="absolute border-2 border-[#AC87C5] hidden right-[-23px] w-[90vw] md:w-[380px] h-[115px] top-[20px] bg-white mt-10 rounded-xl">
                                 <p class="text-sm font-bold text-[#AC87C5] flex justify-start mx-5 mt-4">Masuk Ke Akunmu</p>
-                                <div class="flex items-center justify-center gap-6 mt-4">
-                                    <div class="rounded-xl w-40 h-10 border-2 border-[#AC87C5] hover:bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:border-none group">
-                                        <div class="text-center text-[#AC87C5] text-sm font-bold pt-[8px] group-hover:text-white">
+                                <div class="flex items-center justify-center gap-6 mt-4 mx-4">
+                                    <!-- <a href="register.php"> -->
+                                        <div class="rounded-xl w-40 h-10 border-2 border-[#AC87C5] hover:bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:border-none group">
+                                            <div class="text-center text-[#AC87C5] text-sm font-bold pt-[8px] group-hover:text-white">
                                             <a href="register.php">Daftar</a>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="rounded-xl w-40 h-10 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
-                                        <div class="text-center text-white text-sm font-bold pt-[8px] group-hover:text-[#AC87C5]">
+                                    <!-- </a> -->
+                                    <!-- <a href="login.php"> -->
+                                        <div class="rounded-xl w-40 h-10 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
+                                            <div class="text-center text-white text-sm font-bold pt-[8px] group-hover:text-[#AC87C5]">
                                             <a href="login.php">Masuk</a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    <!-- </a> -->
                                 </div>
                             </div>
                         </div>
                         <div class="hidden sm:flex gap-4">
-                            <div class="mx-auto rounded-xl w-24 h-10 border-2 border-white hover:bg-[#E0AED0]">
-                                <div class="text-center text-white text-sm font-bold pt-[8px]">
-                                    <a href="register.php">Daftar</a>
+                            <a href="register.php">
+                                <div class="mx-auto rounded-xl w-24 h-10 border-2 border-white hover:bg-[#E0AED0]">
+                                    <div class="text-center text-white text-sm font-bold pt-[8px]">
+                                        Daftar
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mx-auto rounded-xl w-24 h-10 border-2 border-white hover:bg-[#E0AED0]">
-                                <div class="text-center text-white text-sm font-bold pt-[8px]">
-                                    <a href="login.php">Masuk</a>
+                            </a>
+                            <a href="login.php">
+                                <div class="mx-auto rounded-xl w-24 h-10 border-2 border-white hover:bg-[#E0AED0]">
+                                    <div class="text-center text-white text-sm font-bold pt-[8px]">
+                                        Masuk
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     <?php
                     }

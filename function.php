@@ -1,82 +1,11 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "", "wisuda");
 
-// function setSession($user_id, $remember) {
-//     global $conn;
+$conn = mysqli_connect("localhost", "root", "", "event");
 
-//     $session_id = bin2hex(random_bytes(32));
-//     $expired = $remember ? time() + 60 : 0; // Jika remember, cookie berlangsung selama 60 detik (1 menit), jika tidak, cookie berakhir saat session
 
-//     $stmt = $conn->prepare("INSERT INTO sessions (session_id, user_id, expired) VALUES (?, ?, ?)");
-//     $stmt->bind_param("sii", $session_id, $user_id, $expired);
-//     $stmt->execute();
-//     $stmt->close();
-
-//     if ($remember) {
-//         setcookie("session_id", $session_id, $expired, "/");
-//     } else {
-//         setcookie("session_id", $session_id, 0, "/"); // Cookie berakhir saat session
-//     }
-// }
-
-// function getSession() {
-//     global $conn;
-
-//     if (isset($_COOKIE['session_id'])) {
-//         $session_id = $_COOKIE['session_id'];
-        
-//         $stmt = $conn->prepare("SELECT user_id FROM sessions WHERE session_id = ? AND (expired > ? OR expired = 0)");
-//         $current_time = time();
-//         $stmt->bind_param("si", $session_id, $current_time);
-//         $stmt->execute();
-//         $stmt->bind_result($user_id);
-//         $stmt->fetch();
-//         $stmt->close();
-
-//         if ($user_id) {
-//             $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
-//             $stmt->bind_param("i", $user_id);
-//             $stmt->execute();
-//             $result = $stmt->get_result();
-//             $user_data = $result->fetch_assoc();
-//             $stmt->close();
-
-//             return $user_data;
-//         } else {
-//             return null;
-//         }
-//     } else {
-//         return null;
-//     }
-// }
-
-// function deleteSession() {
-//     global $conn;
-
-//     if (isset($_COOKIE['session_id'])) {
-//         $session_id = $_COOKIE['session_id'];
-        
-//         $stmt = $conn->prepare("DELETE FROM sessions WHERE session_id = ?");
-//         $stmt->bind_param("s", $session_id);
-//         $stmt->execute();
-//         $stmt->close();
-
-//         setcookie("session_id", "", time() - 3600, "/");
-//     }
-// }
-
-// function cleanExpiredSessions() {
-//     global $conn;
-
-//     $current_time = time();
-//     $stmt = $conn->prepare("DELETE FROM sessions WHERE expired <= ?");
-//     $stmt->bind_param("i", $current_time);
-//     $stmt->execute();
-//     $stmt->close();
-// }
-// // Pastikan untuk memanggil fungsi ini di awal skrip
-// cleanExpiredSessions();
-
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 function query($query)
 {
@@ -105,7 +34,7 @@ function getkategori()
     return $kategori;
 }
 
-function getEvents($kategori_id = null, $searchKeyword = null, $halamanAktif = 1, $jumlahDataPerHalaman = 6, $countOnly = false)
+function getEvents($kategori_id = null, $searchKeyword = null, $halamanAktif = 1, $jumlahDataPerHalaman = 9, $countOnly = false)
 {
     global $conn;
 
@@ -151,15 +80,15 @@ function getEvents($kategori_id = null, $searchKeyword = null, $halamanAktif = 1
     // Append ORDER BY clause for prioritizing upcoming events by ascending date and past events by descending date
     $sql .= " ORDER BY 
               CASE 
-                  WHEN events.tanggal >= CURDATE() THEN 1
+                  WHEN events.tanggal_mulai >= CURDATE() THEN 1
                   ELSE 2
               END ASC, 
               CASE 
-                  WHEN events.tanggal >= CURDATE() THEN events.tanggal
+                  WHEN events.tanggal_mulai >= CURDATE() THEN events.tanggal_mulai
                   ELSE NULL
               END ASC,
               CASE 
-                  WHEN events.tanggal < CURDATE() THEN events.tanggal
+                  WHEN events.tanggal_mulai < CURDATE() THEN events.tanggal_mulai
                   ELSE NULL
               END DESC 
               LIMIT $awalData, $jumlahDataPerHalaman";
@@ -179,7 +108,7 @@ function getEvents($kategori_id = null, $searchKeyword = null, $halamanAktif = 1
     return $events;
 }
 
-function registrasi($data)
+function daftarAkun($data)
 {
     global $conn;
 
@@ -204,7 +133,7 @@ function registrasi($data)
     // Cek konfirmasi password
     if ($password !== $password2) {
         $_SESSION['flash'] = [
-            'message' => 'Konfirmasi password tidak sesuai!',
+            'message' => 'Konfirmasi kata sandi tidak sesuai!',
             'type' => 'error'
         ];
         header('Location: register.php');
@@ -224,30 +153,31 @@ function registrasi($data)
     return mysqli_affected_rows($conn);
 }
 
-function ubah3($data)
-{
+function editEvent($data) {
     global $conn;
 
-    // Mengambil data dari form
     $id = $data["id"];
     $judul = htmlspecialchars($data["judul"]);
-    $kategori_id = htmlspecialchars($data["kategori"]); // Nama kategori
+    $kategori_nama = htmlspecialchars($data["kategori"]); // Nama kategori diambil dari form
     $lokasi = htmlspecialchars($data["lokasi"]);
-    $tanggal = htmlspecialchars($data["tanggal"]);
-    $waktu = htmlspecialchars($data["waktu"]);
     $link_pendaftaran = htmlspecialchars($data["link_pendaftaran"]);
     $deskripsi = htmlspecialchars($data["deskripsi"]);
     $penyelenggara = htmlspecialchars($data["penyelenggara"]);
 
-    // Mengelola upload gambar
+
+    $result = $conn->query("SELECT tanggal_mulai, tanggal_berakhir, waktu_mulai, waktu_berakhir FROM events WHERE event_id = '$id'");
+    $row = $result->fetch_assoc();
+
+    $tanggal_mulai = !empty($data['tanggal_mulai']) ? htmlspecialchars($data['tanggal_mulai']) : $row['tanggal_mulai'];
+    $tanggal_berakhir = !empty($data['tanggal_berakhir']) ? htmlspecialchars($data['tanggal_berakhir']) : $row['tanggal_berakhir'];
+    $waktu_mulai = !empty($data['waktu_mulai']) ? htmlspecialchars($data['waktu_mulai']) : $row['waktu_mulai'];
+    $waktu_berakhir = !empty($data['waktu_berakhir']) ? htmlspecialchars($data['waktu_berakhir']) : $row['waktu_berakhir'];
+
     if ($_FILES['gambar']['error'] === 4) {
-        // Jika tidak ada gambar baru yang diupload, gunakan gambar lama
         $gambar = htmlspecialchars($data["gambar_lama"]);
     } else {
-        // Jika ada gambar baru yang diupload, gunakan gambar baru
         $gambar = upload2();
         if (!$gambar) {
-            // Gagal upload gambar, jangan lanjut ke proses update
             return 'upload_error';
         }
     }
@@ -255,7 +185,7 @@ function ubah3($data)
     // Ambil ID kategori berdasarkan nama kategori
     $query_kategori = "SELECT id FROM kategori WHERE kategori = ?";
     $stmt_kategori = $conn->prepare($query_kategori);
-    $stmt_kategori->bind_param('s', $kategori_id);
+    $stmt_kategori->bind_param('s', $kategori_nama);
     $stmt_kategori->execute();
     $result_kategori = $stmt_kategori->get_result();
 
@@ -263,19 +193,20 @@ function ubah3($data)
         $kategori = $result_kategori->fetch_assoc();
         $kategori_id = $kategori['id'];
 
-        // Query untuk mengupdate data
         $query = "UPDATE events SET
-                    judul = ?, kategori_id = ?, lokasi = ?, tanggal = ?, waktu = ?, 
+                    judul = ?, kategori_id = ?, lokasi = ?, tanggal_mulai = ?, tanggal_berakhir = ?, waktu_mulai = ?, waktu_berakhir = ?, 
                     link_pendaftaran = ?, deskripsi = ?, penyelenggara = ?, gambar = ?
                     WHERE event_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param(
-            "sisssssssi",
+            "sisssssssssi",
             $judul,
             $kategori_id,
             $lokasi,
-            $tanggal,
-            $waktu,
+            $tanggal_mulai,
+            $tanggal_berakhir,
+            $waktu_mulai,
+            $waktu_berakhir,
             $link_pendaftaran,
             $deskripsi,
             $penyelenggara,
@@ -296,6 +227,11 @@ function ubah3($data)
         return 'category_error';
     }
 }
+
+
+
+
+
 
 // Fungsi upload yang sama dengan yang digunakan di fungsi pengajuan
 function upload2()
@@ -355,10 +291,12 @@ function pengajuan($data)
         $judul = htmlspecialchars($data['judul']);
         $kategori_id = htmlspecialchars($data['kategori']);  // Nama kategori
         $lokasi = htmlspecialchars($data['lokasi']);
-        $tanggal = htmlspecialchars($data['tanggal']);
-        $waktu = htmlspecialchars($data['waktu']);
+        $tanggal_mulai = htmlspecialchars($data['tanggal_mulai']);
+        $tanggal_berakhir = htmlspecialchars($data['tanggal_berakhir']);
+        $waktu_mulai = htmlspecialchars($data['waktu_mulai']);
+        $waktu_berakhir = htmlspecialchars($data['waktu_berakhir']);
         $link_pendaftaran = htmlspecialchars($data['link_pendaftaran']);
-        $deskripsi = htmlspecialchars_decode($data['deskripsi']);
+        $deskripsi = htmlspecialchars($data['deskripsi']);
         $penyelenggara = htmlspecialchars($data['penyelenggara']);
 
         // // Hapus semua tag HTML dari deskripsi
@@ -385,15 +323,17 @@ function pengajuan($data)
             $kategori_id = $kategori['id'];
 
             // Query untuk menyimpan data
-            $stmt = $conn->prepare("INSERT INTO events (users_id, judul, kategori_id, lokasi, tanggal, waktu, link_pendaftaran, deskripsi, penyelenggara, status, gambar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO events (users_id, judul, kategori_id, lokasi, tanggal_mulai, tanggal_berakhir, waktu_mulai, waktu_berakhir, link_pendaftaran, deskripsi, penyelenggara, status, gambar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param(
-                "sssssssssss",
+                "sssssssssssss",
                 $users_id,
                 $judul,
                 $kategori_id,
                 $lokasi,
-                $tanggal,
-                $waktu,
+                $tanggal_mulai,
+                $tanggal_berakhir,
+                $waktu_mulai,
+                $waktu_berakhir,
                 $link_pendaftaran,
                 $deskripsi,
                 $penyelenggara,
@@ -411,6 +351,7 @@ function pengajuan($data)
         }
     }
 }
+
 
 
 function upload()
@@ -480,7 +421,7 @@ function tambah($data)
 }
 
 
-function hapus($id)
+function hapusKategori($id)
 {
     global $conn;
 
@@ -488,7 +429,7 @@ function hapus($id)
     return mysqli_affected_rows($conn);
 }
 
-function hapus2($id)
+function hapusEvent($id)
 {
     global $conn;
 
@@ -496,7 +437,7 @@ function hapus2($id)
     return mysqli_affected_rows($conn);
 }
 
-function hapus3($id)
+function hapusPengguna($id)
 {
     global $conn;
 
@@ -505,7 +446,7 @@ function hapus3($id)
 }
 
 
-function ubah($data)
+function ubahKategori($data)
 {
     global $conn;
 
@@ -521,7 +462,7 @@ function ubah($data)
     return mysqli_affected_rows($conn);
 }
 
-function ubah2($data)
+function ubahEvent($data)
 {
     global $conn;
 
@@ -577,32 +518,32 @@ function ubah2($data)
 // }
 
 
-function cari2($keyword)
-{
-    global $conn;
+// function cari2($keyword)
+// {
+//     global $conn;
 
-    // Query dengan 7 placeholder sesuai dengan kolom yang dicari
-    $query = "SELECT * FROM users
-    WHERE nama LIKE ? OR
-          email LIKE ? OR
-          role LIKE ?";
+//     // Query dengan 7 placeholder sesuai dengan kolom yang dicari
+//     $query = "SELECT * FROM users
+//     WHERE nama LIKE ? OR
+//           email LIKE ? OR
+//           role LIKE ?";
 
-    // Siapkan pernyataan
-    $stmt = $conn->prepare($query);
+//     // Siapkan pernyataan
+//     $stmt = $conn->prepare($query);
 
-    // Pastikan keyword dicocokkan dengan semua placeholder
-    $keyword = "%$keyword%";
-    $stmt->bind_param("sss", $keyword, $keyword, $keyword);
+//     // Pastikan keyword dicocokkan dengan semua placeholder
+//     $keyword = "%$keyword%";
+//     $stmt->bind_param("sss", $keyword, $keyword, $keyword);
 
-    // Eksekusi pernyataan
-    $stmt->execute();
+//     // Eksekusi pernyataan
+//     $stmt->execute();
 
-    // Ambil hasilnya
-    $result = $stmt->get_result();
+//     // Ambil hasilnya
+//     $result = $stmt->get_result();
 
-    // Kembalikan hasil sebagai array asosiatif
-    return $result->fetch_all(MYSQLI_ASSOC);
-}
+//     // Kembalikan hasil sebagai array asosiatif
+//     return $result->fetch_all(MYSQLI_ASSOC);
+// }
 
 // function cari3($keyword)
 // {

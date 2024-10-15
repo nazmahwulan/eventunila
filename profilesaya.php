@@ -57,15 +57,15 @@ if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
         <div class="flex flex-wrap list-none mx-14 mt-10 lg:mx-32">
             <div class="flex hover:text-[#756AB6] font-semibold">
                 <a href="index.php">
-                    <i class="ti ti-home-filled pr-2"></i>Home</a>
+                    <i class="ti ti-home-filled pr-2"></i>Beranda</a>
             </div>
             <span class="mx-2">/</span>
             <li class="text-[#756AB6] font-semibold">Profile Saya</li>
         </div>
 
         <?php if ($flash) : ?>
-            <div id="flash-message" class="flex justify-center items-center my-4">
-                <div class="flex items-center px-4 py-2 rounded-xl bg-white border-2 border-[#AC87C5] text-black font-semibold">
+            <div id="flash-message" class="absolute top-0 left-1/2 transform -translate-x-1/2 mt-24 w-full max-w-md flex justify-center items-center z-50">
+                <div class="flex items-center px-4 py-2 rounded-xl bg-white shadow-xl text-black font-semibold">
                     <?php if ($flash['type'] == 'success') : ?>
                         <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
                     <?php elseif ($flash['type'] == 'error') : ?>
@@ -86,17 +86,23 @@ if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
         </div>
         <input type="hidden" name="id" value="<?php echo $user["id"]; ?> ">
         <div class="md:h-[470px]">
-            <label for="nama" class="block mx-10 lg:mx-[340px] md:mx-[70px] my-2  text-gray-500 font-bold text-sm">Nama</label>
-            <div class="flex justify-center">
-                <input type="text" class="bg-gray-100 px-4 w-10/12 lg:w-6/12 h-10 bg-white rounded-xl border-2 border-[#756AB6]" name="nama" id="nama" value="<?php echo $user["nama"]; ?>" disabled>
+            <div class="mx-10 lg:mx-[340px] md:mx-[70px]">
+                <label for="nama" class="block  my-2  text-gray-500 font-bold text-sm">Nama</label>
+                <div class="flex justify-center">
+                    <input type="text" class="bg-gray-100 px-4 w-full h-10 bg-white rounded-xl border-2 border-[#AC87C5]" name="nama" id="nama" value="<?php echo $user["nama"]; ?>" disabled>
+                </div>
             </div>
-            <label for="email" class="block mx-10 lg:mx-[340px] md:mx-[70px]  md:mt-4 my-2 text-gray-500 font-bold text-sm">Email</label>
+            <div class="mx-10 lg:mx-[340px] md:mx-[70px]">
+            <label for="email" class="block md:mt-4 my-2 text-gray-500 font-bold text-sm">Email</label>
             <div class="flex justify-center">
-                <input type="text" class="bg-gray-100 px-4 w-10/12 lg:w-6/12 h-10 bg-white rounded-xl border-2 border-[#756AB6]" name="email" id="email" value="<?php echo $user["email"]; ?>" disabled>
+                <input type="text" class="bg-gray-100 px-4 w-full h-10 bg-white rounded-xl border-2 border-[#AC87C5]" name="email" id="email" value="<?php echo $user["email"]; ?>" disabled>
             </div>
-            <label for="password" class="block mx-10 lg:mx-[340px] md:mx-[70px] md:mt-4 my-2 text-gray-500 font-bold text-sm">Kata Sandi</label>
+            </div>
+            <div class="mx-10 lg:mx-[340px] md:mx-[70px]">
+            <label for="password" class="block d:mt-4 my-2 text-gray-500 font-bold text-sm">Kata Sandi</label>
             <div class="flex justify-center mb-24">
-                <input type="password" class="bg-gray-100 px-4 w-10/12 lg:w-6/12 h-10 bg-white rounded-xl border-2 border-[#756AB6]" name="password" id="password" value="<?php echo $shortPassword; ?>" disabled>
+                <input type="password" class="bg-gray-100 px-4 w-full h-10 bg-white rounded-xl border-2 border-[#AC87C5]" name="password" id="password" value="<?php echo $shortPassword; ?>" disabled>
+            </div>
             </div>
         </div>
 
@@ -106,11 +112,11 @@ if (isset($_GET["id"]) && is_numeric($_GET["id"])) {
                 <div class="mb-6 md:mb-0">
                     <p class="text-white font-bold text-2xl md:text-4xl">EventUnila</p>
                     <p class="text-gray-500 font-bold text-sm mt-4">Kumpulan Pengalaman, <br> Ayo bergabung bersama di EventUnila!</p>
-                    <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
+                    <!-- <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
                         <a href="about.php">Tentang Kami</a>
                         <a href="kontak.php">Kontak</a>
                         <a href="kebijakan.php">Kebijakan Pribadi</a>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="text-white font-bold text-sm">
                     <p>Jl. Prof. Sumantri Brojonegoro No.1 Gedong Meneng, <br>Bandar Lampung.</p>

@@ -34,7 +34,7 @@ $kategori = query("SELECT * FROM kategori");
 
 // Cek apakah tombol submit sudah ditekan
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (ubah2($_POST) > 0) {
+    if (ubahEvent($_POST) > 0) {
         // Set flashdata untuk sukses
         $_SESSION['flash'] = [
             'message' => 'Event berhasil diubah!',
@@ -48,10 +48,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
     }
     // Redirect ke halaman yang sama dengan ID
-    header('Location: ubah.php?id=' . $id);
+    header('Location: index.php');
     exit;
 }
 
+$tanggalMulai = $event["tanggal_mulai"];
+$tanggalAkhir = $event["tanggal_berakhir"];
+$waktuMulai = $event["waktu_mulai"];
+$waktuAkhir = $event["waktu_berakhir"];
+
+// Format tanggal
+$formattedTanggalMulai = date('d M Y', strtotime($tanggalMulai));
+$formattedTanggalAkhir = date('d M Y', strtotime($tanggalAkhir));
+
+// Format waktu
+$formattedWaktuMulai = date('H:i', strtotime($waktuMulai));
+$formattedWaktuAkhir = date('H:i', strtotime($waktuAkhir));
+
+// Cek jika tanggal mulai dan akhir sama
+if ($tanggalMulai == $tanggalAkhir) {
+    $tanggalTampil = $formattedTanggalMulai;
+} else {
+    $tanggalTampil = $formattedTanggalMulai . " - " . $formattedTanggalAkhir;
+}
+
+// Cek jika waktu mulai dan akhir sama
+if ($waktuMulai == $waktuAkhir) {
+    $waktuTampil = $formattedWaktuMulai;
+} else {
+    $waktuTampil = $formattedWaktuMulai . " - " . $formattedWaktuAkhir;
+}
 // Cek apakah ada flashdata
 $flash = isset($_SESSION['flash']) ? $_SESSION['flash'] : null;
 unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
@@ -72,7 +98,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
 <body>
     <div class="lg:flex bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] w-full h-full md:h-screen lg:h-full py-6 lg:p-5 ">
         <div class="flex justify-between mx-10 pb-6 lg:mx-0 lg:pb-0">
-            <a class="text-white font-bold text-2xl lg:hidden" href="index.php">EventUnila</a>
+            <a class="text-white font-bold text-2xl lg:hidden" href="../index.php">EventUnila</a>
             <button id="dropdownButton">
                 <i id="dropdownIcon" class="ti ti-user-circle text-white text-3xl lg:hidden"></i>
             </button>
@@ -101,7 +127,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
         </div>
 
         <div class="bg-white shadow-xl lg:w-1/5 lg:h-auto rounded-xl hidden lg:flex flex-col lg:mr-4">
-            <a class="text-[#AC87C5] font-bold text-4xl py-6 flex justify-center" href="index.php">EventUnila</a>
+            <a class="text-[#AC87C5] font-bold text-4xl py-6 flex justify-center" href="../index.php">EventUnila</a>
             <nav class=" w-full flex flex-col ">
                 <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/beranda.php">
                     <i class="ti ti-dashboard ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Beranda</span>
@@ -162,43 +188,63 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                         <input type="hidden" name="id" value="<?php echo $event["event_id"]; ?> ">
                         <label for="judul" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-[#AC87C5] font-bold text-sm">Nama Event</label>
                         <div class="flex justify-center">
-                            <input type="text" class="px-4 w-11/12 h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="judul" id="judul" value="<?php echo $event["judul"]; ?>" disabled>
+                            <input type="text" class="px-4 w-11/12 h-10 bg-gray-100  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6] form-control" name="judul" id="judul" value="<?php echo $event["judul"]; ?>" disabled>
                         </div>
                         <div class="flex gap-4">
                             <div class="flex-1">
                                 <label for="kategori" class="block ml-4 md:ml-8 lg:ml-10 my-2 text-[#AC87C5] font-bold text-sm">Kategori</label>
                                 <div class="ml-4 md:ml-8 lg:ml-10 flex justify-start">
-                                    <input type="text" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="kategori" id="kategori" value="<?php echo $event["kategori"]; ?>" disabled>
+                                    <input type="text" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6] form-control" name="kategori" id="kategori" value="<?php echo $event["kategori"]; ?>" disabled>
                                 </div>
                             </div>
                             <div class="flex-1">
                                 <label for="lokasi" class="block mr-4 md:mr-8 lg:mr-10 my-2 text-[#AC87C5] font-bold text-sm">Lokasi</label>
                                 <div class="mr-4 md:mr-8 lg:mr-10flex justify-start">
-                                    <input type="text" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="lokasi" id="lokasi" value="<?php echo $event["lokasi"]; ?>" disabled>
+                                    <input type="text" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6] form-control" name="lokasi" id="lokasi" value="<?php echo $event["lokasi"]; ?>" disabled>
                                 </div>
                             </div>
                         </div>
                         <div class="flex gap-4">
                             <div class="flex-1">
-                                <label for="tanggal" class="block ml-4 md:ml-8 lg:ml-10 my-2 text-[#AC87C5] font-bold text-sm">Tanggal</label>
-                                <div class="ml-4 md:ml-8 lg:ml-10 flex justify-start">
-                                    <input type="date" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="tanggal" id="tanggal" value="<?php echo $event["tanggal"]; ?>" disabled>
+                                <div class="relative">
+                                    <label for="tanggal" class="block ml-4 md:ml-8 lg:ml-10 my-2 text-[#AC87C5] font-bold text-sm">Tanggal</label>
+                                    <div class="ml-4 md:ml-8 lg:ml-10 flex justify-start relative">
+                                        <input id="tanggalDropdownInput" type="text" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6] form-control" name="tanggal" aria-describedby="tanggalHelp" placeholder="Pilih tanggal" readonly required value="<?php echo $tanggalTampil; ?>" disabled>
+                                        <div id="tanggalDropdownMenu" class="hidden absolute left-0 top-12 w-full max-w-xs rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                            <div class="p-4">
+                                                <label for="tanggal_mulai" class="block text-[#756AB6] text-sm font-bold mb-2">Tanggal Mulai</label>
+                                                <input type="date" id="tanggalMulai" name="tanggal_mulai" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] focus:outline-none focus:ring-2 focus:ring-[#756AB6] focus:border-transparent form-control mb-4">
+                                                <label for="tanggal_berakhir" class="block text-[#756AB6] text-sm font-bold mb-2">Tanggal Berakhir</label>
+                                                <input type="date" id="tanggalBerakhir" name="tanggal_berakhir" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] focus:outline-none focus:ring-2 focus:ring-[#756AB6] focus:border-transparent form-control">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex-1">
-                                <label for="waktu" class="block mr-4 md:mr-8 lg:mr-10 my-2 text-[#AC87C5] font-bold text-sm">Waktu</label>
-                                <div class="mr-4 md:mr-8 lg:mr-10 flex justify-start">
-                                    <input type="time" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="waktu" id="waktu" value="<?php echo $event["waktu"]; ?>" disabled>
+                                <div class="relative">
+                                    <label for="waktu" class="block mr-4 md:mr-8 lg:mr-10 my-2 text-[#AC87C5] font-bold text-sm">Waktu</label>
+                                    <div class="mr-4 md:mr-8 lg:mr-10 flex justify-start relative">
+                                        <input id="waktuDropdownInput" type="text" class="px-4 w-full h-10 bg-gray-100  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6] form-control" name="waktu" aria-describedby="waktuHelp" placeholder="Pilih waktu" readonly required value="<?php echo $waktuTampil; ?>" disabled>
+                                        <div id="waktuDropdownMenu" class="hidden absolute left-0 top-12 w-full max-w-xs rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                            <div class="p-4">
+                                                <label for="waktu_mulai" class="block text-[#756AB6] text-sm font-bold mb-2">Waktu Mulai</label>
+                                                <input type="time" id="waktuMulai" name="waktu_mulai" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] focus:outline-none focus:ring-2 focus:ring-[#756AB6] focus:border-transparent form-control mb-4">
+                                                <label for="waktu_berakhir" class="block text-[#756AB6] text-sm font-bold mb-2">Waktu Berakhir</label>
+                                                <input type="time" id="waktuBerakhir" name="waktu_berakhir" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] focus:outline-none focus:ring-2 focus:ring-[#756AB6] focus:border-transparent form-control">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <label for="link_pendaftaran" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-[#AC87C5] font-bold text-sm">Link Pendaftaran</label>
                         <div class="flex justify-center">
-                            <input type="text" class="px-4 w-11/12 h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="link_pendaftaran" id="link_pendaftaran" required value="<?php echo $event["link_pendaftaran"]; ?>" disabled>
+                            <input type="text" class="px-4 w-11/12 h-10 bg-gray-100  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6] form-control" name="link_pendaftaran" id="link_pendaftaran" required value="<?php echo $event["link_pendaftaran"]; ?>" disabled>
                         </div>
                         <label for="penyelenggara" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-[#AC87C5] font-bold text-sm">Nama Penyelenggara</label>
                         <div class="flex justify-center">
-                            <input type="text" class="px-4 w-11/12 h-10 bg-gray-100  rounded-xl border-2 border-[#756AB6] form-control" name="penyelenggara" id="penyelenggara" value="<?php echo $event["penyelenggara"]; ?>" disabled>
+                            <input type="text" class="px-4 w-11/12 h-10 bg-gray-100  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6] form-control" name="penyelenggara" id="penyelenggara" value="<?php echo $event["penyelenggara"]; ?>" disabled>
                         </div>
                         <label for="deskripsi" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-[#AC87C5] font-bold text-sm">Deskripsi Event</label>
                         <div class="flex justify-center">
@@ -211,7 +257,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                         <div class="relative">
                             <label for="status" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-[#AC87C5] font-bold text-sm">Status</label>
                             <div class="flex justify-center">
-                                <input id="statusDropdownInput" type="text" class="px-4 w-11/12 h-10 bg-white  rounded-xl border-2 border-[#756AB6] form-control" name="status" id="status" aria-describedby="penyelenggaraHelp" value="<?php echo $event["status"]; ?>" readonly>
+                                <input id="statusDropdownInput" type="text" class="px-4 w-11/12 h-10 bg-white  rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6] form-control" name="status" id="status" aria-describedby="penyelenggaraHelp" value="<?php echo $event["status"]; ?>" readonly>
                                 <div id="statusDropdownMenu" class="hidden absolute left-[200px] transform -translate-x-1/2 mt-1 w-full max-w-xs rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                                     <ul class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="statusDropdownInput">
                                         <li><button type="button" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sedang Diajukan</button></li>
@@ -221,12 +267,10 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                                 </div>
                             </div>
                         </div>
-                        <div class="text-center my-6 mx-4 md:mx-8 lg:mx-10 rounded-xl w-24 h-8 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
-                            <button type="submit" name="submit" class=" text-white text-sm font-bold pt-[5px] group-hover:text-[#AC87C5]">
+                            <button type="submit" name="submit" class="text-center my-6 mx-4 md:mx-8 lg:mx-10 rounded-xl w-24 h-8 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] text-white text-sm font-bold hover:text-[#AC87C5]">
                                 Simpan
                             </button>
-                        </div>
-                </div>
+                    </div>
                 </form>
             </div>
         </div>

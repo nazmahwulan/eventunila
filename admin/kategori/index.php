@@ -10,7 +10,7 @@ if ($_SESSION['user_role'] !== 'admin') {
 }
 
 //pagination
-$jumlahDataPerHalaman = 2;
+$jumlahDataPerHalaman = 8;
 $halamanAktif = (isset($_GET["halaman"])) ? $_GET["halaman"] : 1;
 $awalData = ($jumlahDataPerHalaman * $halamanAktif) - $jumlahDataPerHalaman;
 
@@ -23,7 +23,7 @@ if (isset($_POST["cari"])) {
 }
 
 // Query dasar
-$queryBase = "SELECT *FROM kategori ";
+$queryKategori = "SELECT * FROM kategori ";
 
 // Tambahkan kondisi pencarian jika ada keyword
 $querySearch = "";
@@ -32,25 +32,18 @@ if (!empty($keyword)) {
 }
 
 // Hitung total data
-$queryCount = $queryBase . $querySearch;
+$queryCount = $queryKategori . $querySearch;
 $kategoris = query($queryCount);
 $jumlahData = count($kategoris);
 $jumlahHalaman = ceil($jumlahData / $jumlahDataPerHalaman);
 
 // Query dengan LIMIT untuk pagination
-$query = $queryBase . $querySearch . " ORDER BY kategori.created_at DESC LIMIT $awalData, $jumlahDataPerHalaman";
+$query = $queryKategori . $querySearch . " ORDER BY kategori.created_at DESC LIMIT $awalData, $jumlahDataPerHalaman";
 $kategori = query($query);
 
 // Cek apakah ada flashdata
 $flash = isset($_SESSION['flash']) ? $_SESSION['flash'] : null;
 unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
-
-// $kategori = query("SELECT *FROM kategori ORDER BY 
-//         kategori.created_at DESC");
-
-// // Cek apakah ada flashdata
-// $flash = isset($_SESSION['flash']) ? $_SESSION['flash'] : null;
-// unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
 ?>
 
 <!DOCTYPE html>
@@ -65,9 +58,9 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
 </head>
 
 <body>
-    <div class="lg:flex bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] w-full h-screen lg:h-full py-6 lg:p-5 ">
+    <div class="lg:flex bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] w-full h-auto md:h-screen lg:h-full py-6 lg:p-5 ">
         <div class="flex justify-between mx-10 pb-6 lg:mx-0 lg:pb-0">
-            <a class="text-white font-bold text-2xl lg:hidden" href="index.php">EventUnila</a>
+            <a class="text-white font-bold text-2xl lg:hidden" href="../index.php">EventUnila</a>
             <button id="dropdownButton">
                 <i id="dropdownIcon" class="ti ti-user-circle text-white text-3xl lg:hidden"></i>
             </button>
@@ -96,7 +89,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
         </div>
 
         <div class="bg-white shadow-xl lg:w-1/5 lg:h-full rounded-xl hidden lg:flex flex-col lg:mr-4">
-            <a class="text-[#AC87C5] font-bold text-4xl py-6 flex justify-center" href="index.php">EventUnila</a>
+            <a class="text-[#AC87C5] font-bold text-4xl py-6 flex justify-center" href="../index.php">EventUnila</a>
             <nav class=" w-full flex flex-col ">
                 <a class="nav-link gap-3 px-12 py-2.5 my-1 text-base flex items-center text-[#AC87C5] hover:w-11/12 hover:rounded-r-full hover:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] active:w-11/12 active:rounded-r-full active:bg-gradient-to-b from-[#AC87C5] via-[#E0AED0] to-[#FFE5E5] group" href="/event/admin/beranda.php">
                     <i class="ti ti-dashboard ps-2 text-2xl group-hover:text-white group-active:text-white"></i><span class="group-hover:text-white group-active:text-white">Beranda</span>
@@ -129,42 +122,44 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
             <div class="flex justify-center lg:hidden">
                 <hr class="border-white border-1 w-full md:w-[1050px]">
             </div>
-            <div class="flex justify-center lg:justify-start lg:gap-[190px]">
+            <div class="flex justify-between lg:gap-[210px] relative">
                 <h1 class="hidden lg:block text-white font-bold text-4xl my-6 mx-5">Kategori</h1>
+                <!-- Pesan Flash di tengah yang sejajar dengan tulisan Kategori -->
                 <?php if ($flash) : ?>
-                    <div id="flash-message" class="flex justify-center items-center my-4">
-                        <div class="flex items-center px-4 py-2 rounded-xl bg-white text-black font-semibold shadow-2xl">
-                            <?php if ($flash['type'] == 'success') : ?>
-                                <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
-                            <?php elseif ($flash['type'] == 'error') : ?>
-                                <i class="ti ti-circle-x-filled text-2xl text-[#FF0000] mr-2"></i>
-                            <?php endif; ?>
-                            <div class="text-center">
-                                <?php echo $flash['message']; ?>
-                            </div>
+                    <div id="flash-message" class="absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center px-4 py-2 rounded-xl bg-white text-black font-semibold shadow-2xl">
+                        <?php if ($flash['type'] == 'success') : ?>
+                            <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
+                        <?php elseif ($flash['type'] == 'error') : ?>
+                            <i class="ti ti-circle-x-filled text-2xl text-[#FF0000] mr-2"></i>
+                        <?php endif; ?>
+                        <div class="text-center">
+                            <?php echo $flash['message']; ?>
                         </div>
                     </div>
                 <?php endif; ?>
             </div>
+
             <div class="hidden lg:flex justify-center">
                 <hr class="border-white border-1 w-[1000px]">
             </div>
             <h2 class="text-white font-bold text-2xl lg:text-4xl flex justify-center my-6">Daftar Kategori</h2>
 
             <div class="bg-white lg:w-[1000px] shadow-xl rounded-xl p-6 mx-10 lg:mx-5 overflow-x-auto">
-            <div class="flex justify-end gap-4 mb-5 w-[400px] md:w-[700px] lg:w-[950px]">
-                    <form action="" method="POST" class="flex items-center">
-                        <input type="text" class="block px-4 w-40 h-10 bg-white rounded-l-xl border-2 border-[#AC87C5]" name="keyword" placeholder="Cari Kategori" autocomplete="off" value="<?php echo isset($_POST['keyword']) ? htmlspecialchars($_POST['keyword']) : ''; ?>">
-                        <button type="submit" name="cari" class="ti ti-search text-white px-2 w-10 h-10 rounded-r-xl bg-[#AC87C5]">
+                <div class="flex justify-end gap-4 mb-5 pr-4 w-[400px] md:w-[700px] lg:w-[950px]">
+                    <form action="" method="GET" class="flex items-center">
+                        <input type="text" class="block px-4 w-40 h-10 bg-white rounded-l-xl border-2 border-[#AC87C5] focus:outline-none focus:[#AC87C5] focus:border-[#AC87C5]" name="keyword" placeholder="Cari Kategori" autocomplete="off" value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>">
+                        <button type="submit" class="ti ti-search text-white px-2 w-10 h-10 rounded-r-xl bg-[#AC87C5]">
                         </button>
                     </form>
-                    <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-44 h-10 hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
-                        <div class="text-center pt-[6px]">
-                            <a class="text-white gap-2 text-base flex justify-center font-bold group-hover:text-[#AC87C5]" href="tambah.php">
-                                <i class="ti ti-plus text-xl font-bold "></i><span>Tambah Kategori</span>
-                            </a>
+                    <a href="tambah.php">
+                        <div class="bg-gradient-to-b from-[#AC87C5] to-[#E0AED0] rounded-xl w-44 h-10 hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
+                            <div class="text-center pt-[6px]">
+                                <div class="text-white gap-2 text-base flex justify-center font-bold group-hover:text-[#AC87C5]">
+                                    <i class="ti ti-plus text-xl font-bold "></i><span>Tambah Kategori</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <table class="min-w-full divide-y divide-gray-200 w-[400px] md:lg:w-full">
                     <thead>
@@ -216,7 +211,7 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
                     </div>
                 </div>
 
-                <div class="flex justify-end mt-4 w-[400px] md:w-[700px] lg:w-[950px]">
+                <div class="flex justify-end mt-4 pr-4 w-[400px] md:w-[700px] lg:w-[950px]">
                     <?php if ($halamanAktif > 1) : ?>
                         <a class="border-2 border-[#AC87C5] rounded-xl p-2 mx-1 text-xs font-bold" href="?halaman=<?= $halamanAktif - 1 ?>&keyword=<?= isset($keyword) ? $keyword : '' ?>">&laquo;</a>
                     <?php endif; ?>
@@ -255,8 +250,8 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
 
     <script src="../../script.js"></script>
     <script>
-       // Function to set the active nav-link
-       function setActiveNavLink() {
+        // Function to set the active nav-link
+        function setActiveNavLink() {
             const currentPath = window.location.pathname;
             const navLinks = document.querySelectorAll('.nav-link');
 

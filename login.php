@@ -2,16 +2,6 @@
 include 'function.php';
 session_start();
 
-// // Bersihkan sesi yang telah kadaluarsa
-// cleanExpiredSessions();
-
-//cek cookie
-if (isset($_COOKIE['login'])){
-    if($_COOKIE['login'] == 'true') {
-        $_SESSION['login'] = true;
-    }
-}
-
 if (isset($_SESSION["login"])) {
     header("location:index.php");
     exit;
@@ -29,23 +19,15 @@ if (isset($_POST["login"])) {
     // Jika query berhasil dan ditemukan pengguna dengan email yang diberikan
     if ($result && mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
+
         // Verifikasi kata sandi
         if (password_verify($password, $row["password"])) {
             // Kata sandi cocok, atur variabel sesi
             $_SESSION["login"] = true;
-            //cek remember me
-            if (isset($_POST['remember'])) {
-                //buat cookie
-                setcookie('login', 'true', time() + 60);
-            }
             $_SESSION['users_id'] = $row['id']; // Simpan ID pengguna dalam sesi
             $_SESSION['nama'] = $row['nama'];
             $_SESSION['email'] = $row['email'];
-
-            
-
-            // // Atur cookie sesi
-            // setSession($row['id'], $remember);
+            $_SESSION['user_role'] = $row['role']; // Simpan peran pengguna
 
             // Redirect sesuai peran pengguna
             $role = strtolower($row["role"]); // Pastikan peran dibandingkan dalam huruf kecil
@@ -76,17 +58,11 @@ if (isset($_POST["login"])) {
     }
 }
 
-// $current_user = getSession();
-
-// if ($current_user) {
-//     header("Location: index.php");
-//     exit();
-// }
-
 // Cek apakah ada flashdata
 $flash = isset($_SESSION['flash']) ? $_SESSION['flash'] : null;
 unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
 ?>
+
 
 
 
@@ -112,21 +88,23 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
             <span class="mx-2">/</span>
             <li class="text-[#756AB6] font-semibold">Masuk</li>
         </div>
-        <?php if ($flash) : ?>
-            <div id="flash-message" class="hidden lg:block flex justify-center items-center lg:my-4  ">
-                <div class="flex items-center px-4 py-2 rounded-xl bg-white shadow-xl text-black font-semibold shadow-2xl">
-                    <?php if ($flash['type'] == 'success') : ?>
-                        <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
-                    <?php elseif ($flash['type'] == 'error') : ?>
-                        <i class="ti ti-circle-x-filled text-2xl text-[#FF0000] mr-2"></i>
-                    <?php endif; ?>
-                    <div class="text-center">
-                        <?php echo $flash['message']; ?>
-                    </div>
+    </div>
+
+    <?php if ($flash) : ?>
+        <div id="flash-message" class="hidden lg:block absolute top-0 left-1/2 transform -translate-x-1/2 mt-5 flex justify-center items-center z-50">
+            <div class="flex items-center px-4 py-2 rounded-xl bg-white shadow-xl text-black font-semibold max-w-full">
+                <?php if ($flash['type'] == 'success') : ?>
+                    <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
+                <?php elseif ($flash['type'] == 'error') : ?>
+                    <i class="ti ti-circle-x-filled text-2xl text-[#FF0000] mr-2"></i>
+                <?php endif; ?>
+                <div class="text-center whitespace-nowrap">
+                    <?php echo $flash['message']; ?>
                 </div>
             </div>
-        <?php endif; ?>
-    </div>
+        </div>
+    <?php endif; ?>
+
 
 
     <div class="lg:flex lg:mx-40">
@@ -135,8 +113,8 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
         </div>
 
         <?php if ($flash) : ?>
-            <div id="flash-message" class="lg:hidden flex justify-center items-center lg:my-4 mt-4 ">
-                <div class="flex items-center px-4 py-2 rounded-xl bg-white shadow-xl  text-black font-semibold shadow-2xl">
+            <div id="flash-message2" class=" lg:hidden absolute top-0 left-1/2 transform -translate-x-1/2 mt-5 w-full max-w-md flex justify-center items-center z-50">
+                <div class="flex items-center px-4 py-2 rounded-xl bg-white shadow-xl text-black font-semibold">
                     <?php if ($flash['type'] == 'success') : ?>
                         <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
                     <?php elseif ($flash['type'] == 'error') : ?>
@@ -157,51 +135,60 @@ unset($_SESSION['flash']); // Hapus flashdata setelah ditampilkan
             <!-- form -->
             <form action="" method="post">
                 <!-- username -->
-                <label for="email" class="block md:mx-12 lg:mx-16 mx-10 my-2 text-gray-500 font-bold text-sm">Alamat email</label>
-                <div class="flex justify-center">
-                    <input type="text" class="block px-4 md:w-96 w-10/12 h-10 bg-white rounded-xl border-2 border-[#756AB6]" name="email" id="email" aria-describedby="emailHelp" required placeholder="Masukan Email Kamu">
+                <div class="md:mx-12 lg:mx-16 mx-10">
+                    <label for="email" class="block  my-2 text-gray-500 font-bold text-sm">Alamat email</label>
+                    <div class="flex justify-center">
+                        <input type="text" class="block px-4 w-full h-10 bg-white rounded-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6]" name="email" id="email" aria-describedby="emailHelp" required placeholder="Masukan Email Kamu">
+                    </div>
                 </div>
                 <!-- password -->
-                <label for="password" class="block md:mx-12 lg:mx-16 mx-10 my-2 text-gray-500 font-bold text-sm">Kata Sandi</label>
-                <div class="flex justify-center">
-                    <input type="password" class="block px-4 md:w-[345px] w-[320px] h-10 bg-white  rounded-l-xl border-2 border-[#756AB6]" name="password" id="password" required placeholder="Masukan Kata Sandi">
-                    <button id="togglePassword" type="button" class="text-white px-2 w-10 h-10 rounded-r-xl bg-[#756AB6]">
-                        <i id="eyeIconOpen" class="ti ti-eye hidden"></i>
-                        <i id="eyeIconClosed" class="ti ti-eye-off"></i>
-                    </button>
-                </div>
-                <!-- checkbox -->
-                <div class="flex justify-between">
-                    <div class="flex items-center gap-2 md:mx-12 lg:mx-16 mx-10">
-                        <label for="remember" class="my-2 text-gray-500 font-bold text-sm">Ingat Saya</label>
-                        <input type="checkbox" class="" name="remember" id="remember">
+                <div class="md:mx-12 lg:mx-16 mx-10">
+                    <label for="password" class="block  my-2 text-gray-500 font-bold text-sm">Kata Sandi</label>
+                    <div class="flex justify-center">
+                        <input type="password" class="block px-4 w-full h-10 bg-white  rounded-l-xl border-2 border-[#AC87C5] focus:outline-none focus:[#756AB6] focus:border-[#756AB6]" name="password" id="password" required placeholder="Masukan Kata Sandi">
+                        <button id="togglePassword" type="button" class="text-white px-2 w-10 h-10 rounded-r-xl bg-[#AC87C5]">
+                            <i id="eyeIconOpen" class="ti ti-eye hidden"></i>
+                            <i id="eyeIconClosed" class="ti ti-eye-off"></i>
+                        </button>
                     </div>
-                    <a href="forgot_password.php" class=" text-gray-500 font-bold text-sm mx-10 my-2 md:mx-12 lg:mx-16">Lupa kata sandi?</a>
+                </div>
+
+                <!-- checkbox -->
+                <div class="md:mx-12 lg:mx-16 mx-10">
+                    <div class="flex justify-end">
+                        <a href="forgot_password.php" class=" text-gray-500 font-bold text-sm my-2">Lupa kata sandi?</a>
+                    </div>
                 </div>
 
                 <!-- button -->
-                <div class="text-center mx-auto mt-4 rounded-xl md:w-96 w-10/12 h-10 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
-                    <button type="submit" name="login" class=" text-white text-sm font-bold pt-[8px] group-hover:text-[#AC87C5]">
+                <div class="md:mx-12 lg:mx-16 mx-10">
+                    <button type="submit" name="login" class=" text-white text-sm font-bold text-center mt-4 rounded-xl w-full h-10 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] hover:text-[#AC87C5]">
                         Masuk
                     </button>
                 </div>
                 <div class="mt-4">
                     <div class="flex gap-1 justify-center">
-                    <h2 class="text-sm font-semibold">Belum punya akun? Ayo</h2>
-                    <a href="register.php" class="text-sm text-[#AC87C5] hover:text-[#756AB6] font-semibold">Daftar Sekarang</a>
+                        <h2 class="text-sm font-semibold">Belum punya akun? Ayo</h2>
+                        <a href="register.php" class="text-sm text-[#AC87C5] hover:text-[#756AB6] font-semibold">Daftar Sekarang</a>
                     </div>
-                    <!-- <div class="mx-auto rounded-xl md:w-96 w-10/12 h-10 border-2 border-[#AC87C5] hover:bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:border-none group">
-                        <div class="text-center text-[#AC87C5] text-sm font-bold pt-[8px] group-hover:text-white">
-                            <a href="register.php">Daftar</a>
-                        </div>
-                    </div> -->
                 </div>
             </form>
         </div>
     </div>
-    </div>
-    <script src="script.js"></script>
+
+    <!-- <script src="script.js"></script> -->
     <script>
+        // Alert notifikasi
+        const flashMessage2 = document.getElementById('flash-message2');
+        if (flashMessage2) {
+            setTimeout(() => {
+                flashMessage2.classList.add('opacity-0');
+                setTimeout(() => {
+                    flashMessage2.remove();
+                }, 1000);
+            }, 1000);
+        }
+
         document.getElementById('togglePassword').addEventListener('click', function() {
             var passwordField = document.getElementById('password');
             var eyeIconOpen = document.getElementById('eyeIconOpen');

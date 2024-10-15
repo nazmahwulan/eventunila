@@ -50,7 +50,7 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <style>
         .ql-container {
-            height: 200px;
+            height: 150px;
             border: none !important;
             /* Hilangkan border default Quill */
         }
@@ -61,7 +61,7 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
         }
 
         .ql-editor {
-            min-height: 200px;
+            min-height: 150px;
             /* Atur tinggi minimum sesuai kebutuhan */
         }
     </style>
@@ -71,15 +71,15 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
     <div class="flex flex-wrap list-none mx-14 my-5 lg:mx-32 ">
         <div class="flex hover:text-[#756AB6] font-semibold">
             <a href="index.php">
-                <i class="ti ti-home-filled pr-2"></i>Home</a>
+                <i class="ti ti-home-filled pr-2"></i>Beranda</a>
         </div>
         <span class="mx-2">/</span>
         <li class="text-[#756AB6] font-semibold">Daftar Event</li>
     </div>
 
     <?php if ($flash) : ?>
-        <div id="flash-message" class="flex justify-center items-center my-4">
-            <div class="flex items-center px-4 py-2 rounded-xl bg-white border-2 border-[#AC87C5]  text-black font-semibold">
+        <div id="flash-message" class="absolute top-0 left-1/2 transform -translate-x-1/2 mt-24 w-full max-w-md flex justify-center items-center z-50">
+            <div class="flex items-center px-4 py-2 rounded-xl bg-white shadow-xl text-black font-semibold">
                 <?php if ($flash['type'] == 'success') : ?>
                     <i class="ti ti-circle-check-filled text-2xl text-[#9BCF53] mr-2"></i>
                 <?php elseif ($flash['type'] == 'error') : ?>
@@ -102,17 +102,17 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
                     <img id="box" src="" alt="Preview Gambar" class="w-full h-full object-cover hidden">
                 </label>
             </div>
-            <div class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] mx-auto rounded-b-xl w-[340px] md:w-[740px] lg:w-[900px] md:h-[800px] h-[750px]">
+            <div class="bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] mx-auto rounded-b-xl w-[340px] md:w-[740px] lg:w-[900px] md:h-[780px] lg:h-[750px]">
                 <label for="judul" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-white font-bold text-sm">Nama Event</label>
                 <div class="flex justify-center">
-                    <input type="text" class="px-4 w-11/12 h-10 bg-white  rounded-xl border-2 border-[#756AB6] form-control" name="judul" id="judul" aria-describedby="eventHelp" require placeholder="Nama Event" required>
+                    <input type="text" class="px-4 w-11/12 h-10 bg-white  rounded-xl border-2 border-white focus:outline-none focus:[#756AB6] focus:border-[#756AB6] form-control" name="judul" id="judul" aria-describedby="eventHelp" require placeholder="Nama Event" required>
                 </div>
                 <div class="flex gap-4">
                     <div class="flex-1">
                         <div class="relative">
                             <label for="kategori" class="block ml-4 md:ml-8 lg:ml-10 my-2 text-white font-bold text-sm">Kategori</label>
                             <div class="ml-4 md:ml-8 lg:ml-10 flex justify-start relative">
-                                <input id="kategoriDropdownInput" type="text" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="kategori" aria-describedby="kategoriHelp" placeholder="Pilih Kategori" readonly required>
+                                <input id="kategoriDropdownInput" type="text" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-white focus:outline-none focus:[#756AB6] focus:border-[#756AB6]  form-control" name="kategori" aria-describedby="kategoriHelp" placeholder="Pilih Kategori" readonly required>
                                 <div id="kategoriDropdownMenu" class="hidden absolute left-[70px] md:left-[160px] top-[50px] transform -translate-x-1/2 w-full max-w-xs rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                                     <ul class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="kategoriDropdownInput">
                                         <?php foreach ($kategori as $row) : ?>
@@ -126,42 +126,62 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
                     <div class="flex-1">
                         <label for="lokasi" class="block mr-4 md:mr-8 lg:mr-10 my-2 text-white font-bold text-sm">Lokasi</label>
                         <div class="mr-4 md:mr-8 lg:mr-10 flex justify-start">
-                            <input type="text" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="lokasi" id="lokasi" aria-describedby="lokasiHelp" placeholder="Pilih Lokasi" required>
+                            <input type="text" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-white focus:outline-none focus:[#756AB6] focus:border-[#756AB6]  form-control" name="lokasi" id="lokasi" aria-describedby="lokasiHelp" placeholder="Pilih Lokasi" required>
                         </div>
                     </div>
                 </div>
                 <div class="flex gap-4">
                     <div class="flex-1">
-                        <label for="tanggal" class="block ml-4 md:ml-8 lg:ml-10 my-2 text-white font-bold text-sm">Tanggal</label>
-                        <div class="ml-4 md:ml-8 lg:ml-10 flex justify-start">
-                            <input type="date" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="tanggal" id="tanggal" aria-describedby="tanggalHelp" placeholder="Pilih Tanggal" required>
+                        <div class="relative">
+                            <label for="tanggal" class="block ml-4 md:ml-8 lg:ml-10 my-2 text-white font-bold text-sm">Tanggal</label>
+                            <div class="ml-4 md:ml-8 lg:ml-10 flex justify-start relative">
+                                <input id="tanggalDropdownInput" type="text" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-white focus:outline-none focus:ring-2 focus:ring-[#756AB6] focus:border-transparent form-control" name="tanggal" aria-describedby="tanggalHelp" placeholder="Pilih tanggal" readonly required>
+                                <div id="tanggalDropdownMenu" class="hidden absolute left-0 top-12 w-full max-w-xs rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                    <div class="p-4">
+                                        <label for="tanggal_mulai" class="block text-[#756AB6] text-sm font-bold mb-2">Tanggal Mulai</label>
+                                        <input type="date" id="tanggalMulai" name="tanggal_mulai" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] focus:outline-none focus:ring-2 focus:ring-[#756AB6] focus:border-transparent form-control mb-4">
+                                        <label for="tanggal_berakhir" class="block text-[#756AB6] text-sm font-bold mb-2">Tanggal Berakhir</label>
+                                        <input type="date" id="tanggalBerakhir" name="tanggal_berakhir"  class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] focus:outline-none focus:ring-2 focus:ring-[#756AB6] focus:border-transparent form-control">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="flex-1">
-                        <label for="waktu" class="block mr-4 md:mr-8 lg:mr-10 my-2 text-white font-bold text-sm">Waktu</label>
-                        <div class="mr-4 md:mr-8 lg:mr-10 flex justify-start">
-                            <input type="time" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="waktu" id="waktu" aria-describedby="waktuHelp" placeholder="Pilih Tanggal" required>
+                        <div class="relative">
+                            <label for="waktu" class="block mr-4 md:mr-8 lg:mr-10 my-2 text-white font-bold text-sm">Waktu</label>
+                            <div class="mr-4 md:mr-8 lg:mr-10 flex justify-start relative">
+                                <input id="waktuDropdownInput" type="text" class="px-4 w-full h-10 bg-white rounded-xl border-2 border-white focus:outline-none focus:ring-2 focus:ring-[#756AB6] focus:border-transparent form-control" name="waktu" aria-describedby="waktuHelp" placeholder="Pilih waktu" readonly required>
+                                <div id="waktuDropdownMenu" class="hidden absolute left-0 top-12 w-full max-w-xs rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                    <div class="p-4">
+                                        <label for="waktu_mulai" class="block text-[#756AB6] text-sm font-bold mb-2">Waktu Mulai</label>
+                                        <input type="time" id="waktuMulai" name="waktu_mulai"  class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] focus:outline-none focus:ring-2 focus:ring-[#756AB6] focus:border-transparent form-control mb-4">
+                                        <label for="waktu_berakhir" class="block text-[#756AB6] text-sm font-bold mb-2">Waktu Berakhir</label>
+                                        <input type="time" id="waktuBerakhir" name="waktu_berakhir"  class="px-4 w-full h-10 bg-white rounded-xl border-2 border-[#756AB6] focus:outline-none focus:ring-2 focus:ring-[#756AB6] focus:border-transparent form-control">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <label for="link_pendaftaran" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-white font-bold text-sm">Link Pendaftaran</label>
                 <div class="flex justify-center">
-                    <input type="text" class="px-4 w-11/12 h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="link_pendaftaran" id="link_pendaftaran" aria-describedby="pendafataranHelp" placeholder="Link Pendaftaran" required>
+                    <input type="text" class="px-4 w-11/12 h-10 bg-white rounded-xl border-2 border-white focus:outline-none focus:[#756AB6] focus:border-[#756AB6]  form-control" name="link_pendaftaran" id="link_pendaftaran" aria-describedby="pendafataranHelp" placeholder="Link Pendaftaran">
                 </div>
                 <label for="penyelenggara" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-white font-bold text-sm">Nama Penyelenggara</label>
                 <div class="flex justify-center">
-                    <input type="text" class="px-4 w-11/12 h-10 bg-white rounded-xl border-2 border-[#756AB6] form-control" name="penyelenggara" id="penyelenggara" aria-describedby="penyelenggaraHelp" placeholder="Nama Penyelenggara" required>
+                    <input type="text" class="px-4 w-11/12 h-10 bg-white rounded-xl border-2 border-white focus:outline-none focus:[#756AB6] focus:border-[#756AB6]  form-control" name="penyelenggara" id="penyelenggara" aria-describedby="penyelenggaraHelp" placeholder="Nama Penyelenggara" required>
                 </div>
                 <label for="deskripsi" class="block mx-4 md:mx-8 lg:mx-10 my-2 text-white font-bold text-sm">Deskripsi Event</label>
                 <div class="flex justify-center">
-                    <div class="rounded-xl w-11/12 h-64 bg-white rounded-xl border-2 border-[#756AB6]">
+                    <div class="rounded-xl w-11/12 h-64 md:h-60 lg:h-[210px] bg-white rounded-xl border-2 border-white focus:outline-none focus:[#756AB6] focus:border-[#756AB6] ">
                         <div class="text-xl" id="editor-container"></div>
                     </div>
                 </div>
                 <input type="hidden" name="deskripsi" id="hidden-deskripsi">
-                <div class="mx-auto rounded-xl w-60 md:w-80 h-10 border-2 border-white my-6 md:mt-10 hover:bg-[#E0AED0]  text-center">
-                    <button type="submit" name="submit" class=" text-white text-sm font-bold pt-[8px]">
-                        Daftar
+                <div class="flex justify-center">
+                    <button type="submit" name="submit" class="rounded-xl w-60 md:w-80 h-10 border-2 border-white my-6 md:mt-10 hover:bg-[#E0AED0]  text-center text-white text-sm font-bold">
+                        Ajukan Event
                     </button>
                 </div>
             </div>
@@ -173,11 +193,11 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
             <div class="mb-6 md:mb-0">
                 <p class="text-white font-bold text-2xl md:text-4xl">EventUnila</p>
                 <p class="text-gray-500 font-bold text-sm mt-4">Kumpulan Pengalaman, <br> Ayo bergabung bersama di EventUnila!</p>
-                <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
+                <!-- <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
                     <a href="about.php">Tentang Kami</a>
                     <a href="kontak.php">Kontak</a>
                     <a href="kebijakan.php">Kebijakan Pribadi</a>
-                </div>
+                </div> -->
             </div>
             <div class="text-white font-bold text-sm">
                 <p>Jl. Prof. Sumantri Brojonegoro No.1 Gedong Meneng, <br>Bandar Lampung.</p>
@@ -219,32 +239,86 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
             });
         }
 
+        const tanggalDropdownInput = document.getElementById('tanggalDropdownInput');
+        const tanggalDropdownMenu = document.getElementById('tanggalDropdownMenu');
+        const tanggalMulai = document.getElementById('tanggalMulai');
+        const tanggalBerakhir = document.getElementById('tanggalBerakhir');
+
+        const waktuDropdownInput = document.getElementById('waktuDropdownInput');
+        const waktuDropdownMenu = document.getElementById('waktuDropdownMenu');
+        const waktuMulai = document.getElementById('waktuMulai');
+        const waktuBerakhir = document.getElementById('waktuBerakhir');
+
+        tanggalDropdownInput.addEventListener('click', () => {
+            tanggalDropdownMenu.classList.toggle('hidden');
+        });
+
+        waktuDropdownInput.addEventListener('click', () => {
+            waktuDropdownMenu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!tanggalDropdownInput.contains(event.target) && !tanggalDropdownMenu.contains(event.target)) {
+                tanggalDropdownMenu.classList.add('hidden');
+            }
+            if (!waktuDropdownInput.contains(event.target) && !waktuDropdownMenu.contains(event.target)) {
+                waktuDropdownMenu.classList.add('hidden');
+            }
+        });
+
+        function updateInput() {
+            const mulaiTanggal = tanggalMulai.value;
+            const BerakhirTanggal = tanggalBerakhir.value;
+            if (mulaiTanggal && BerakhirTanggal) {
+                tanggalDropdownInput.value = `${mulaiTanggal} - ${BerakhirTanggal}`;
+            }
+
+            const mulaiWaktu = waktuMulai.value;
+            const BerakhirWaktu = waktuBerakhir.value;
+            if (mulaiWaktu && BerakhirWaktu) {
+                waktuDropdownInput.value = `${mulaiWaktu} - ${BerakhirWaktu}`;
+            }
+        }
+
+        tanggalMulai.addEventListener('change', updateInput);
+        tanggalBerakhir.addEventListener('change', updateInput);
+        waktuMulai.addEventListener('change', updateInput);
+        waktuBerakhir.addEventListener('change', updateInput);
+
+
         document.addEventListener('DOMContentLoaded', (event) => {
             var quill = new Quill('#editor-container', {
                 theme: 'snow',
                 modules: {
                     toolbar: [
-                    [{ 'header': [1, 2, false] }],
-                    ['bold', 'italic', 'underline'],
-                    ['link', 'image'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'align': [] }],
-                    [{ 'color': [] }, { 'background': [] }],
-                    [{ 'font': [] }],
-                    [{ 'size': ['small', false, 'large', 'huge'] }],
-                    ['clean']
-                ]
+                        [{
+                            'header': [1, 2, false]
+                        }],
+                        ['bold', 'italic', 'underline'],
+                        ['link', 'image'],
+                        [{
+                            'list': 'ordered'
+                        }, {
+                            'list': 'bullet'
+                        }],
+                        [{
+                            'align': []
+                        }],
+                        [{
+                            'color': []
+                        }, {
+                            'background': []
+                        }],
+                        [{
+                            'size': ['small', false, 'large', 'huge']
+                        }],
+                        ['clean']
+                    ]
                 }
             });
 
             document.getElementById('eventForm').onsubmit = function(event) {
                 var deskripsi = quill.root.innerHTML;
-
-                // // Hapus semua tag HTML di klien
-                // var tempElement = document.createElement("div");
-                // tempElement.innerHTML = deskripsi;
-                // deskripsi = tempElement.textContent || tempElement.innerText || "";
-
                 document.getElementById('hidden-deskripsi').value = deskripsi;
                 console.log("Deskripsi yang dikirim:", deskripsi);
 

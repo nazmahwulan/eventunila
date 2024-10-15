@@ -3,23 +3,7 @@ ob_start(); // Memulai output buffering
 include 'function.php';
 include 'navbar.php';
 
-// // Bersihkan sesi yang telah kadaluarsa
-// cleanExpiredSessions();
-
-// // $current_user = getSession();
-
-// // if (!$current_user) {
-// //     header("Location: login.php");
-// //     exit();
-// // }
-
-// if(isset($_GET['action']) && $_GET['action'] == 'logout') {
-//     deleteSession();
-// }
-
-// $current_user = getSession();
-
-$event = query("SELECT * FROM events WHERE events.status = 'disetujui' AND events.tanggal >= CURDATE() ORDER BY events.tanggal ASC LIMIT 6");
+$event = query("SELECT * FROM events WHERE events.status = 'disetujui' AND events.tanggal_berakhir >= CURDATE() ORDER BY events.tanggal_berakhir ASC LIMIT 6");
 ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
 
 ?>
@@ -60,7 +44,7 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
             <div class="flex flex-wrap justify-around w-full lg:w-3/4">
                 <div class="text-center mb-4">
                     <div class="mx-auto px-3.5 py-2.5 text-4xl bg-white rounded-full w-16 h-16 text-[#AC87C5]">
-                        <i class="ti ti-bulb"></i>
+                        <i class="ti ti-brain"></i>
                     </div>
                     <p class="mt-4 text-center font-bold text-white text-sm ">Meningkatkan soft <br> skill dan hard skill </p>
                 </div>
@@ -72,7 +56,7 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
                 </div>
                 <div class="text-center mb-4">
                     <div class="mx-auto px-3.5 py-2.5 text-4xl bg-white rounded-full w-16 h-16 text-[#AC87C5]">
-                        <i class="ti ti-bulb"></i>
+                        <i class="ti ti-heart-handshake"></i>
                     </div>
                     <p class="mt-4 text-center font-bold text-white text-sm">Menambah relasi <br> dan pengalaman </p>
                 </div>
@@ -81,36 +65,43 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
     </div>
 
     <div class="px-28">
-        <h3 class="text-[#756AB6] font-bold text-2xl md:text-3xl text-center lg:text-left">Event Mendatang</h3>
+        <h3 class="text-[#756AB6] font-bold text-2xl md:text-3xl text-center lg:text-left lg:my-10">Event Mendatang</h3>
     </div>
 
-    <div class="grid gap-8 my-12 mx-10 lg:mx-28 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <div class="flex justify-center grid gap-8 my-5 mx-10 lg:mx-28 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <?php foreach ($event as $row) : ?>
             <?php
-            $date = date_create($row['tanggal']);
-            $time = date_create($row['waktu']);
+            $tanggalMulai = $row["tanggal_mulai"];
+            $tanggalAkhir = $row["tanggal_berakhir"];
+
+            // Format tanggal
+            $formattedTanggalMulai = date('d M Y', strtotime($tanggalMulai));
+            $formattedTanggalAkhir = date('d M Y', strtotime($tanggalAkhir));
+
+            // Cek jika tanggal mulai dan akhir sama
+            if ($tanggalMulai == $tanggalAkhir) {
+                $tanggalTampil = $formattedTanggalMulai;
+            } else {
+                $tanggalTampil = $formattedTanggalMulai . " - " . $formattedTanggalAkhir;
+            }
             ?>
             <div class="rounded-xl border-2 border-[#AC87C5]">
                 <a href="detailevent.php?id=<?php echo $row["event_id"]; ?>">
-                    <img class="rounded-t-xl w-full h-52 object-cover" src="img/<?php echo $row["gambar"]; ?>" alt="Event Image">
+                    <img class="rounded-t-xl w-full h-52" src="img/<?php echo $row["gambar"]; ?>" alt="Event Image">
                     <div class="mx-8 my-6">
-                        <h4 class="truncate text-xl font-bold mb-2"><?php echo $row["judul"]; ?></h4>
+                        <h4 class="truncate text-xl font-bold mb-2"><?php echo htmlspecialchars($row["judul"]); ?></h4>
                         <div class="flex justify-between mb-2 text-[#AC87C5] font-bold">
                             <div class="flex items-center gap-2">
                                 <i class="ti ti-calendar text-base"></i>
-                                <p class="text-sm text-start"><?php echo date_format($date, "d M Y"); ?></p>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <i class="ti ti-clock text-base"></i>
-                                <p class="text-sm text-start"><?php echo date_format($time, "H:i"); ?> WIB</p>
+                                <p class="text-sm text-start"><?php echo $tanggalTampil; ?></p>
                             </div>
                         </div>
                         <div class="truncate text-justify text-sm">
-                            <?php echo htmlspecialchars_decode($row["deskripsi"]); ?>
+                            <?php echo strip_tags(htmlspecialchars_decode($row["deskripsi"])); ?>
                         </div>
                     </div>
                     <hr class="border-[#AC87C5]">
-                    <div class="text-base font-bold text-center px-10 py-2"><?php echo $row["penyelenggara"]; ?></div>
+                    <div class="text-base font-bold text-center px-10 py-2"><?php echo htmlspecialchars($row["penyelenggara"]); ?></div>
                 </a>
             </div>
         <?php endforeach; ?>
@@ -118,7 +109,7 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
 
 
     <a href="halamanevent.php">
-        <div class="text-center mx-auto mt-4 rounded-xl w-44 h-10 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
+        <div class="text-center mx-auto mt-10 rounded-xl w-44 h-10 bg-gradient-to-r from-[#AC87C5] to-[#E0AED0] hover:bg-none hover:border-2 hover:border-[#AC87C5] group">
             <button type="submit" name="event" class=" text-white text-sm font-bold pt-[8px] group-hover:text-[#AC87C5]">
                 Lihat Event Lainnnya
             </button>
@@ -131,11 +122,11 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
                 Daftarkan Event <br />
                 mu Sekarang!<br />
             </h5>
-            <div class="mx-auto mt-4 rounded-xl w-44 h-10 border-2 border-white text-center hover:bg-[#E0AED0]">
-                <div class="mt-1">
-                    <a class="text-white text-sm font-bold" href="daftarevent.php">Buat Event</a>
+            <a href="daftarevent.php">
+                <div class="flex justify-center mt-4 ">
+                    <button class="rounded-xl w-44 h-10 border-2 border-white text-center hover:bg-[#E0AED0] text-white text-sm font-bold">Ajukan Event</button>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="hidden md:block mx-auto md:mx-auto mr-[100px] shadow-2xl bg-[#756AB6] rounded-xl w-[350px] h-[350px]">
             <img class="w-[550px] ml-[30px] mb-[300px]" src="img/joinn.png">
@@ -148,20 +139,20 @@ ob_end_flush(); // Mengakhiri output buffering dan mengirimkan output
             <div class="mb-6 md:mb-0">
                 <p class="text-white font-bold text-2xl md:text-4xl">EventUnila</p>
                 <p class="text-gray-500 font-bold text-sm mt-4">Kumpulan Pengalaman, <br> Ayo bergabung bersama di EventUnila!</p>
-                <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
+                <!-- <div class="flex flex-col md:flex-row gap-4 text-white font-bold text-sm mt-4">
                     <a href="">Tentang Kami</a>
                     <a href="">Kontak</a>
                     <a href="">Kebijakan Pribadi</a>
-                </div>
+                </div> -->
             </div>
             <div class="text-white font-bold text-sm">
                 <p>Jl. Prof. Sumantri Brojonegoro No.1 Gedong Meneng, <br>Bandar Lampung.</p>
                 <div class="flex gap-5 md:gap-10 text-white text-2xl mt-4">
-                    <a href="https://web.facebook.com/OfficialUnila/?_rdc=1&_rdr"><i class="ti ti-brand-facebook"></i></a>
-                    <a href="https://twitter.com/official_unila"><i class="ti ti-brand-twitter"></i></a>
-                    <a href="https://www.instagram.com/official_unila"><i class="ti ti-brand-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@official_unila"><i class="ti ti-brand-tiktok"></i></a>
-                    <a href="https://www.youtube.com/c/OfficialUnila"><i class="ti ti-brand-youtube"></i></a>
+                    <a target="_blank" href="https://web.facebook.com/OfficialUnila/?_rdc=1&_rdr"><i class="ti ti-brand-facebook"></i></a>
+                    <a target="_blank" href="https://twitter.com/official_unila"><i class="ti ti-brand-twitter"></i></a>
+                    <a target="_blank" href="https://www.instagram.com/official_unila"><i class="ti ti-brand-instagram"></i></a>
+                    <a target="_blank" href="https://www.tiktok.com/@official_unila"><i class="ti ti-brand-tiktok"></i></a>
+                    <a target="_blank" href="https://www.youtube.com/c/OfficialUnila"><i class="ti ti-brand-youtube"></i></a>
                 </div>
                 <div class="mt-6">
                     <p>&copy; 2024 EventUnila. All rights reserved.</p>
